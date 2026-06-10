@@ -3900,9 +3900,10 @@
     .skill-detail-body {
       min-height: 0;
       display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
       gap: 16px;
       padding: 18px 22px 22px;
-      overflow: auto;
+      overflow: hidden;
     }
 
     .skill-detail-hero {
@@ -3927,6 +3928,14 @@
       min-width: 0;
       display: grid;
       gap: 6px;
+    }
+
+    .skill-detail-actions {
+      min-width: 0;
+      display: grid;
+      justify-items: end;
+      align-content: start;
+      gap: 7px;
     }
 
     .skill-detail-title strong {
@@ -4020,11 +4029,13 @@
     }
 
     .skill-detail-schema {
+      min-height: 0;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-rows: minmax(0, auto) minmax(0, auto);
       gap: 12px;
       align-items: stretch;
+      overflow: auto;
     }
 
     .skill-schema-item {
@@ -4044,6 +4055,10 @@
 
     .skill-schema-item.is-prompt {
       grid-column: 1 / -1;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-height: 260px;
+      max-height: min(336px, 46vh);
+      overflow: hidden;
     }
 
     .skill-schema-item h3 {
@@ -4070,9 +4085,6 @@
     }
 
     .agent-detail-call-count {
-      position: absolute;
-      right: 22px;
-      bottom: 8px;
       color: var(--text-faint);
       font-size: 11px;
       line-height: 1;
@@ -4125,8 +4137,8 @@
     }
 
     .agent-prompt-markdown {
-      min-height: 172px;
-      max-height: 312px;
+      min-height: 0;
+      max-height: none;
       overflow: auto;
       padding: 15px 16px;
       border: 1px solid rgba(221, 228, 236, 0.78);
@@ -7389,6 +7401,12 @@
         justify-self: start;
       }
 
+      .skill-detail-actions {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        justify-items: start;
+      }
+
       .detail-drawer.is-skill-detail .detail-close {
         grid-column: auto;
         grid-row: auto;
@@ -7396,6 +7414,7 @@
       }
 
       .skill-detail-body {
+        grid-template-rows: auto minmax(0, 1fr);
         gap: 14px;
         padding: 16px 18px 18px;
       }
@@ -7430,6 +7449,7 @@
 
       .skill-schema-item.is-prompt {
         grid-column: auto;
+        max-height: min(360px, 48vh);
       }
 
       .skill-schema-head {
@@ -7437,8 +7457,8 @@
       }
 
       .agent-prompt-markdown {
-        min-height: 188px;
-        max-height: 340px;
+        min-height: 0;
+        max-height: none;
       }
 
       .agent-detail-extra {
@@ -10965,29 +10985,31 @@
                 <strong id="detail-drawer-title">${escapeHtml(agent.name)}</strong>
                 <p class="skill-detail-description">${escapeHtml(agentDescription(agent))}</p>
               </div>
-              <div class="detail-action-group">
-                <button class="detail-start-button" type="button" data-start-capability="agent" data-capability-id="${escapeHtml(agent.id)}">发起对话</button>
-                <button class="detail-close" type="button" data-detail-close aria-label="关闭详情">×</button>
+              <div class="skill-detail-actions">
+                <div class="detail-action-group">
+                  <button class="detail-start-button" type="button" data-start-capability="agent" data-capability-id="${escapeHtml(agent.id)}">发起对话</button>
+                  <button class="detail-close" type="button" data-detail-close aria-label="关闭详情">×</button>
+                </div>
+                <span class="agent-detail-call-count">${escapeHtml(agent.calls)} 次调用</span>
               </div>
             </div>
-            <span class="agent-detail-call-count">${escapeHtml(agent.calls)} 次调用</span>
           </section>
           <div class="skill-detail-body">
             ${capabilityTaxonomyHtml(agent.categoryLabel, getAgentSecondaryLabels(agent, 6))}
             <section class="skill-detail-schema" aria-label="智能体说明">
-              <div class="skill-schema-item is-scenario">
+              <div class="skill-schema-item agent-schema-item is-scenario">
                 <h3>适用场景</h3>
                 ${agentScenariosHtml(agent)}
               </div>
-              <div class="skill-schema-item">
+              <div class="skill-schema-item agent-schema-item">
                 <h3>输入</h3>
                 ${detailListHtml(agent.inputs, 4)}
               </div>
-              <div class="skill-schema-item">
+              <div class="skill-schema-item agent-schema-item">
                 <h3>输出</h3>
                 ${detailListHtml(agent.outputs, 4)}
               </div>
-              <div class="skill-schema-item is-prompt">
+              <div class="skill-schema-item agent-schema-item is-prompt">
                 <div class="skill-schema-head">
                   <h3>提示词</h3>
                   <button class="agent-prompt-optimize" type="button" data-optimize-agent-prompt="${escapeHtml(agent.id)}" title="AI 优化 Prompt">
@@ -11058,10 +11080,12 @@
                 <strong id="detail-drawer-title">${escapeHtml(skill.name)}</strong>
                 <p class="skill-detail-description">${escapeHtml(profile.description)}</p>
               </div>
-              <div class="detail-action-group">
-                ${skillEnabled ? `<button class="detail-start-button" type="button" data-start-capability="skill" data-capability-id="${escapeHtml(skill.id)}">发起对话</button>` : ""}
-                ${skillSwitchHtml(skill, "skill-detail-control")}
-                <button class="detail-close" type="button" data-detail-close aria-label="关闭详情">×</button>
+              <div class="skill-detail-actions">
+                <div class="detail-action-group">
+                  ${skillEnabled ? `<button class="detail-start-button" type="button" data-start-capability="skill" data-capability-id="${escapeHtml(skill.id)}">发起对话</button>` : ""}
+                  ${skillSwitchHtml(skill, "skill-detail-control")}
+                  <button class="detail-close" type="button" data-detail-close aria-label="关闭详情">×</button>
+                </div>
               </div>
             </div>
           </section>
