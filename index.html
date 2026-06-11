@@ -103,6 +103,7 @@
       --chat-preview-max: var(--chat-track-width);
       --composer-width: var(--chat-track-width);
       --preview-width: clamp(520px, 42vw, 880px);
+      --reports-preview-width: clamp(420px, 40vw, 640px);
       --chat-detail-preview-width: clamp(460px, 36vw, 560px);
       --sidebar-pad: 14px;
       --sidebar-control: 40px;
@@ -1398,13 +1399,13 @@
       height: 100%;
     }
 
-    .composer-action-menu > .composer-action-subwrap {
+    .composer-action-menu>.composer-action-subwrap {
       margin-top: 0;
       padding-top: 0;
       border-top: 0;
     }
 
-    .composer-action-menu > button + .composer-action-subwrap {
+    .composer-action-menu>button+.composer-action-subwrap {
       margin-top: 4px;
       padding-top: 4px;
       border-top: 1px solid #eef2f6;
@@ -1428,7 +1429,7 @@
     }
 
     .composer-action-item:hover,
-    .composer-action-subwrap:hover > .composer-action-item,
+    .composer-action-subwrap:hover>.composer-action-item,
     .composer-action-item:focus-visible {
       color: var(--blue-deep);
       background: #f4f8ff;
@@ -1901,7 +1902,7 @@
     }
 
     .reports-view.preview-open {
-      --active-preview-width: var(--preview-width);
+      --active-preview-width: var(--reports-preview-width);
     }
 
     .reports-view.preview-closing {
@@ -2266,6 +2267,17 @@
       overflow: hidden;
     }
 
+    .reports-board.has-reports {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .reports-board.has-reports .reports-grid {
+      height: auto;
+      max-height: none;
+      overflow: visible;
+    }
+
     .reports-list-head {
       display: none;
       align-items: center;
@@ -2299,16 +2311,26 @@
 
     .reports-grid.is-task-assets {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: auto;
+      grid-auto-flow: row;
+      align-items: start;
+      justify-items: stretch;
       gap: 12px;
       padding: 2px 4px 14px 2px;
     }
 
-    .reports-grid.is-task-assets .subscription-card {
+    .reports-view.preview-open .reports-grid.is-task-assets,
+    .reports-view.preview-closing .reports-grid.is-task-assets {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .reports-grid.is-task-assets .subscription-card {
+      display: flex;
+      flex-direction: column;
       gap: 12px;
-      min-height: 0;
-      overflow: hidden;
+      min-height: 304px;
+      height: auto;
+      overflow: visible;
     }
 
     .reports-grid.is-task-assets .report-task-card:has(.subscription-card-main:hover),
@@ -2319,6 +2341,7 @@
     }
 
     .reports-grid.is-task-assets .subscription-card-main {
+      flex: 0 0 auto;
       padding-bottom: 12px;
       border-bottom: 1px solid rgba(221, 228, 236, 0.74);
       border-radius: 0;
@@ -2443,12 +2466,14 @@
 
     .report-task-documents {
       min-width: 0;
+      min-height: 178px;
+      flex: 0 0 auto;
       display: flex;
-      align-items: stretch;
+      align-items: flex-start;
       gap: 10px;
       overflow-x: auto;
-      overflow-y: hidden;
-      padding: 1px 2px 6px;
+      overflow-y: visible;
+      padding: 1px 2px 12px;
       scrollbar-width: none;
     }
 
@@ -2458,6 +2483,7 @@
 
     .reports-grid.is-task-assets .report-task-documents .report-card {
       flex: 0 0 min(304px, calc(100% - 4px));
+      height: auto;
     }
 
     .report-task-main-copy {
@@ -2501,7 +2527,7 @@
     .reports-grid .report-card {
       position: relative;
       overflow: hidden;
-      min-height: 132px;
+      min-height: 164px;
       flex: 0 0 304px;
       display: grid;
       grid-template-columns: minmax(0, 1fr);
@@ -2629,6 +2655,64 @@
     }
 
     .reports-board.has-reports .reports-empty {
+      display: none;
+    }
+
+    .reports-view.preview-open .reports-search,
+    .reports-view.preview-closing .reports-search {
+      position: relative;
+      z-index: 20;
+      width: 36px;
+      min-width: 36px;
+      flex: 0 0 36px;
+      justify-content: center;
+      gap: 0;
+      padding-inline: 0;
+      overflow: visible;
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .reports-view.preview-open .reports-search input,
+    .reports-view.preview-closing .reports-search input {
+      width: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .reports-view.preview-open .reports-search:hover,
+    .reports-view.preview-open .reports-search.is-expanded,
+    .reports-view.preview-open .reports-search:focus-within,
+    .reports-view.preview-closing .reports-search:hover,
+    .reports-view.preview-closing .reports-search.is-expanded,
+    .reports-view.preview-closing .reports-search:focus-within {
+      width: clamp(160px, calc(100vw - var(--sidebar-width) - var(--reports-preview-width) - 84px), 240px);
+      min-width: 160px;
+      flex-basis: clamp(160px, calc(100vw - var(--sidebar-width) - var(--reports-preview-width) - 84px), 240px);
+      justify-content: flex-start;
+      gap: 8px;
+      padding-inline: 11px;
+    }
+
+    .reports-view.preview-open .reports-search:hover input,
+    .reports-view.preview-open .reports-search.is-expanded input,
+    .reports-view.preview-open .reports-search:focus-within input,
+    .reports-view.preview-closing .reports-search:hover input,
+    .reports-view.preview-closing .reports-search.is-expanded input,
+    .reports-view.preview-closing .reports-search:focus-within input {
+      width: 100%;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .reports-view.preview-open .report-filter-trigger.is-filtered,
+    .reports-view.preview-closing .report-filter-trigger.is-filtered {
+      width: 34px;
+      min-width: 34px;
+      padding: 0;
+    }
+
+    .reports-view.preview-open .report-filter-trigger.is-filtered .report-filter-value,
+    .reports-view.preview-closing .report-filter-trigger.is-filtered .report-filter-value {
       display: none;
     }
 
@@ -3073,7 +3157,7 @@
     }
 
     .matrix-grid.is-list-view .matrix-card-title span,
-    .matrix-grid.is-list-view .matrix-card-meta > span:not(.skill-detail-taxonomy),
+    .matrix-grid.is-list-view .matrix-card-meta>span:not(.skill-detail-taxonomy),
     .matrix-grid.is-list-view .matrix-card-foot span {
       overflow: hidden;
       text-overflow: ellipsis;
@@ -3281,7 +3365,7 @@
       flex-wrap: wrap;
     }
 
-    .matrix-card-meta > span:not(.skill-detail-taxonomy) {
+    .matrix-card-meta>span:not(.skill-detail-taxonomy) {
       max-width: 100%;
       min-height: 22px;
       display: inline-flex;
@@ -3488,8 +3572,13 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
     }
 
     @keyframes modalIn {
@@ -3497,6 +3586,7 @@
         opacity: 0;
         transform: translate3d(0, 8px, 0) scale(0.985);
       }
+
       to {
         opacity: 1;
         transform: translate3d(0, 0, 0) scale(1);
@@ -3711,7 +3801,7 @@
       box-shadow: none;
     }
 
-    .agent-detail > :not(.detail-close) {
+    .agent-detail> :not(.detail-close) {
       margin-right: 0;
       margin-left: 0;
     }
@@ -4552,14 +4642,14 @@
       border-color: rgba(47, 111, 237, 0.16);
     }
 
-	    .subscription-field > span,
-    .subscription-field-head > span,
-	    .subscription-form label > span {
-	      color: var(--text-primary);
-	      font-size: 12px;
-	      font-weight: var(--weight-black);
-	      letter-spacing: 0.01em;
-	      line-height: 1.2;
+    .subscription-field>span,
+    .subscription-field-head>span,
+    .subscription-form label>span {
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: var(--weight-black);
+      letter-spacing: 0.01em;
+      line-height: 1.2;
     }
 
     .subscription-overview-title {
@@ -7065,6 +7155,7 @@
         --chat-preview-max: var(--chat-track-width);
         --composer-width: var(--chat-track-width);
         --preview-width: clamp(620px, 42vw, 960px);
+        --reports-preview-width: clamp(500px, 38vw, 720px);
         --chat-detail-preview-width: clamp(560px, 38vw, 760px);
       }
     }
@@ -7077,6 +7168,7 @@
         --chat-preview-max: var(--chat-track-width);
         --composer-width: var(--chat-track-width);
         --preview-width: clamp(420px, 38vw, 620px);
+        --reports-preview-width: clamp(380px, 38vw, 560px);
         --chat-detail-preview-width: clamp(380px, 36vw, 500px);
         --page-gutter: clamp(18px, 2vw, 32px);
         --home-title-size: clamp(34px, 4.6vw, 52px);
@@ -7119,6 +7211,11 @@
       .chat-view.preview-closing {
         --preview-width: clamp(340px, 38vw, 520px);
         --chat-detail-preview-width: clamp(320px, 36vw, 460px);
+      }
+
+      .reports-view.preview-open,
+      .reports-view.preview-closing {
+        --reports-preview-width: clamp(340px, 42vw, 460px);
       }
 
       .registry-workbench {
@@ -7329,6 +7426,13 @@
       .agents-search {
         width: 100%;
         flex: 1 1 100%;
+      }
+
+      .reports-view.preview-open .reports-search,
+      .reports-view.preview-closing .reports-search {
+        width: 36px;
+        min-width: 36px;
+        flex: 0 0 36px;
       }
 
       .composer-action-menu {
@@ -7584,7 +7688,6 @@
       }
 
     }
-
   </style>
 </head>
 
@@ -7717,7 +7820,8 @@
       <div class="composer-footer">
         <div class="composer-tools left" aria-label="分析选项">
           <span class="composer-action-wrap">
-            <button class="tool-button icon-only composer-action-trigger" type="button" data-action-menu-toggle aria-expanded="false" title="添加内容或指定调用" aria-label="添加内容或指定调用">
+            <button class="tool-button icon-only composer-action-trigger" type="button" data-action-menu-toggle
+              aria-expanded="false" title="添加内容或指定调用" aria-label="添加内容或指定调用">
               <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M12 5v14"></path>
                 <path d="M5 12h14"></path>
@@ -7726,26 +7830,31 @@
             <div class="composer-action-menu" data-action-menu>
               <button class="composer-action-item" type="button" data-upload-target="home-upload">
                 <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M14.5 6.5 8.2 12.8a3 3 0 0 0 4.2 4.2l6.5-6.5a4.2 4.2 0 0 0-6-6L6.5 10.9a5.4 5.4 0 0 0 7.6 7.6l5.4-5.4"></path>
+                  <path
+                    d="M14.5 6.5 8.2 12.8a3 3 0 0 0 4.2 4.2l6.5-6.5a4.2 4.2 0 0 0-6-6L6.5 10.9a5.4 5.4 0 0 0 7.6 7.6l5.4-5.4">
+                  </path>
                 </svg>
                 <span class="composer-action-copy"><strong>文件上传</strong><span>添加文档或图片</span></span>
               </button>
               <span class="composer-action-subwrap">
                 <button class="composer-action-item" type="button" data-submenu-trigger="agent">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                    aria-hidden="true">
                     <rect x="5" y="7" width="14" height="11" rx="3"></rect>
                     <path d="M12 7V4"></path>
                     <path d="M9 12h.01"></path>
                     <path d="M15 12h.01"></path>
                   </svg>
                   <span class="composer-action-copy"><strong>智能体</strong><span>指定业务角色</span></span>
-                  <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
                     <path d="m9 18 6-6-6-6"></path>
                   </svg>
                 </button>
                 <div class="capability-submenu" data-capability-submenu="agent">
                   <label class="capability-search">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                      aria-hidden="true">
                       <circle cx="11" cy="11" r="6"></circle>
                       <path d="m16 16 4 4"></path>
                     </svg>
@@ -7756,19 +7865,22 @@
               </span>
               <span class="composer-action-subwrap">
                 <button class="composer-action-item" type="button" data-submenu-trigger="skill">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                    aria-hidden="true">
                     <path d="M12 3 4 7l8 4 8-4-8-4Z"></path>
                     <path d="m4 12 8 4 8-4"></path>
                     <path d="m4 17 8 4 8-4"></path>
                   </svg>
                   <span class="composer-action-copy"><strong>技能</strong><span>指定业务能力</span></span>
-                  <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
                     <path d="m9 18 6-6-6-6"></path>
                   </svg>
                 </button>
                 <div class="capability-submenu" data-capability-submenu="skill">
                   <label class="capability-search">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                      aria-hidden="true">
                       <circle cx="11" cy="11" r="6"></circle>
                       <path d="m16 16 4 4"></path>
                     </svg>
@@ -7779,8 +7891,8 @@
               </span>
             </div>
           </span>
-          <button class="tool-button" type="button" data-tool-toggle data-tool-id="deep-think" aria-pressed="false" title="深度思考"
-            aria-label="深度思考">
+          <button class="tool-button" type="button" data-tool-toggle data-tool-id="deep-think" aria-pressed="false"
+            title="深度思考" aria-label="深度思考">
             <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="6.5" cy="7" r="2"></circle>
               <circle cx="17.5" cy="7" r="2"></circle>
@@ -7791,8 +7903,8 @@
             </svg>
             <span class="tool-label">深度思考</span>
           </button>
-          <button class="tool-button" type="button" data-tool-toggle data-tool-id="web-search" aria-pressed="false" title="Web Search"
-            aria-label="Web Search">
+          <button class="tool-button" type="button" data-tool-toggle data-tool-id="web-search" aria-pressed="false"
+            title="Web Search" aria-label="Web Search">
             <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="9"></circle>
               <path d="M3 12h18"></path>
@@ -7869,9 +7981,12 @@
       <header class="reports-head page-head">
         <div class="reports-title page-title">
           <div class="title-tabs report-source-tabs" id="report-source-tabs" role="tablist" aria-label="资产来源">
-            <button class="title-tab is-active" type="button" data-report-source-filter="dialog" role="tab" aria-selected="true">来自对话</button>
-            <button class="title-tab" type="button" data-report-source-filter="subscription" role="tab" aria-selected="false">来自任务</button>
-            <button class="title-tab" type="button" data-report-source-filter="upload" role="tab" aria-selected="false">我的上传</button>
+            <button class="title-tab is-active" type="button" data-report-source-filter="dialog" role="tab"
+              aria-selected="true">来自对话</button>
+            <button class="title-tab" type="button" data-report-source-filter="subscription" role="tab"
+              aria-selected="false">来自任务</button>
+            <button class="title-tab" type="button" data-report-source-filter="upload" role="tab"
+              aria-selected="false">我的上传</button>
           </div>
         </div>
         <div class="reports-head-tools page-head-tools">
@@ -7883,7 +7998,8 @@
             <input id="reports-search" type="search" placeholder="搜索资产" autocomplete="off">
           </label>
           <div class="report-filter" id="report-filter-bar" aria-label="资产类型筛选">
-            <button class="report-filter-trigger" id="report-filter-toggle" type="button" aria-haspopup="menu" aria-expanded="false" title="筛选资产类型" aria-label="筛选资产类型">
+            <button class="report-filter-trigger" id="report-filter-toggle" type="button" aria-haspopup="menu"
+              aria-expanded="false" title="筛选资产类型" aria-label="筛选资产类型">
               <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M4 6h16"></path>
                 <path d="M7 12h10"></path>
@@ -7892,7 +8008,8 @@
               <span class="report-filter-value" id="report-filter-value"></span>
             </button>
             <div class="report-filter-menu" id="report-filter-menu" role="menu" hidden>
-              <button type="button" class="is-active" data-report-filter="all" role="menuitemradio" aria-checked="true">全部类型</button>
+              <button type="button" class="is-active" data-report-filter="all" role="menuitemradio"
+                aria-checked="true">全部类型</button>
               <button type="button" data-report-filter="WORD" role="menuitemradio" aria-checked="false">Word</button>
               <button type="button" data-report-filter="PDF" role="menuitemradio" aria-checked="false">PDF</button>
               <button type="button" data-report-filter="PPT" role="menuitemradio" aria-checked="false">PPT</button>
@@ -7939,8 +8056,10 @@
       <header class="agents-head page-head">
         <div class="agents-title page-title">
           <div class="title-tabs plugin-tabs" role="tablist" aria-label="插件类型">
-            <button class="title-tab is-active" type="button" data-plugin-tab="agents" role="tab" aria-selected="true">智能体</button>
-            <button class="title-tab" type="button" data-plugin-tab="skills" role="tab" aria-selected="false">技能</button>
+            <button class="title-tab is-active" type="button" data-plugin-tab="agents" role="tab"
+              aria-selected="true">智能体</button>
+            <button class="title-tab" type="button" data-plugin-tab="skills" role="tab"
+              aria-selected="false">技能</button>
           </div>
         </div>
         <div class="agents-head-tools page-head-tools">
@@ -7953,8 +8072,22 @@
               <input id="agents-search" type="search" placeholder="搜索智能体、能力或业务场景" autocomplete="off">
             </label>
             <div class="view-toggle" id="agents-view-toggle" role="tablist" aria-label="智能体视图">
-              <button type="button" class="is-active" data-plugin-view="card" aria-pressed="true" title="卡片视图" aria-label="卡片视图"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="7" height="6" rx="1.5"></rect><rect x="13" y="5" width="7" height="6" rx="1.5"></rect><rect x="4" y="13" width="7" height="6" rx="1.5"></rect><rect x="13" y="13" width="7" height="6" rx="1.5"></rect></svg></button>
-              <button type="button" data-plugin-view="list" aria-pressed="false" title="列表视图" aria-label="列表视图"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 6h12"></path><path d="M8 12h12"></path><path d="M8 18h12"></path><path d="M4 6h.01"></path><path d="M4 12h.01"></path><path d="M4 18h.01"></path></svg></button>
+              <button type="button" class="is-active" data-plugin-view="card" aria-pressed="true" title="卡片视图"
+                aria-label="卡片视图"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="4" y="5" width="7" height="6" rx="1.5"></rect>
+                  <rect x="13" y="5" width="7" height="6" rx="1.5"></rect>
+                  <rect x="4" y="13" width="7" height="6" rx="1.5"></rect>
+                  <rect x="13" y="13" width="7" height="6" rx="1.5"></rect>
+                </svg></button>
+              <button type="button" data-plugin-view="list" aria-pressed="false" title="列表视图" aria-label="列表视图"><svg
+                  viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M8 6h12"></path>
+                  <path d="M8 12h12"></path>
+                  <path d="M8 18h12"></path>
+                  <path d="M4 6h.01"></path>
+                  <path d="M4 12h.01"></path>
+                  <path d="M4 18h.01"></path>
+                </svg></button>
             </div>
           </div>
           <div class="plugin-tools" data-plugin-tools="skills" hidden>
@@ -7966,8 +8099,22 @@
               <input id="skills-search" type="search" placeholder="搜索技能、业务对象或分析任务" autocomplete="off">
             </label>
             <div class="view-toggle" id="skills-view-toggle" role="tablist" aria-label="技能视图">
-              <button type="button" class="is-active" data-plugin-view="card" aria-pressed="true" title="卡片视图" aria-label="卡片视图"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="5" width="7" height="6" rx="1.5"></rect><rect x="13" y="5" width="7" height="6" rx="1.5"></rect><rect x="4" y="13" width="7" height="6" rx="1.5"></rect><rect x="13" y="13" width="7" height="6" rx="1.5"></rect></svg></button>
-              <button type="button" data-plugin-view="list" aria-pressed="false" title="列表视图" aria-label="列表视图"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 6h12"></path><path d="M8 12h12"></path><path d="M8 18h12"></path><path d="M4 6h.01"></path><path d="M4 12h.01"></path><path d="M4 18h.01"></path></svg></button>
+              <button type="button" class="is-active" data-plugin-view="card" aria-pressed="true" title="卡片视图"
+                aria-label="卡片视图"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="4" y="5" width="7" height="6" rx="1.5"></rect>
+                  <rect x="13" y="5" width="7" height="6" rx="1.5"></rect>
+                  <rect x="4" y="13" width="7" height="6" rx="1.5"></rect>
+                  <rect x="13" y="13" width="7" height="6" rx="1.5"></rect>
+                </svg></button>
+              <button type="button" data-plugin-view="list" aria-pressed="false" title="列表视图" aria-label="列表视图"><svg
+                  viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M8 6h12"></path>
+                  <path d="M8 12h12"></path>
+                  <path d="M8 18h12"></path>
+                  <path d="M4 6h.01"></path>
+                  <path d="M4 12h.01"></path>
+                  <path d="M4 18h.01"></path>
+                </svg></button>
             </div>
           </div>
         </div>
@@ -7977,7 +8124,8 @@
         <section class="registry-rail matrix-toolbar" aria-label="智能体筛选">
           <section class="registry-filter-group">
             <div class="agent-filter-bar registry-filter-bar" role="tablist" aria-label="智能体筛选" id="agent-filter-bar">
-              <button type="button" class="is-active" data-agent-filter="all" title="全部智能体" aria-label="全部智能体">全部</button>
+              <button type="button" class="is-active" data-agent-filter="all" title="全部智能体"
+                aria-label="全部智能体">全部</button>
               <button type="button" data-agent-filter="price" title="价格智能体" aria-label="价格智能体">价格</button>
               <button type="button" data-agent-filter="risk" title="风控智能体" aria-label="风控智能体">风控</button>
               <button type="button" data-agent-filter="logistics" title="物流智能体" aria-label="物流智能体">物流</button>
@@ -7998,11 +8146,14 @@
             <div class="agent-filter-bar registry-filter-bar" role="tablist" aria-label="技能筛选" id="skill-filter-bar">
               <button type="button" class="is-active" data-skill-filter="all" title="全部技能" aria-label="全部技能">全部</button>
               <button type="button" data-skill-filter="market-supply" title="市场供需技能" aria-label="市场供需技能">市场供需</button>
-              <button type="button" data-skill-filter="logistics-transport" title="物流运输技能" aria-label="物流运输技能">物流运输</button>
+              <button type="button" data-skill-filter="logistics-transport" title="物流运输技能"
+                aria-label="物流运输技能">物流运输</button>
               <button type="button" data-skill-filter="risk-warning" title="风险预警技能" aria-label="风险预警技能">风险预警</button>
               <button type="button" data-skill-filter="port-operation" title="港口作业技能" aria-label="港口作业技能">港口作业</button>
-              <button type="button" data-skill-filter="weather-environment" title="气象环境技能" aria-label="气象环境技能">气象环境</button>
-              <button type="button" data-skill-filter="access-compliance" title="准入合规技能" aria-label="准入合规技能">准入合规</button>
+              <button type="button" data-skill-filter="weather-environment" title="气象环境技能"
+                aria-label="气象环境技能">气象环境</button>
+              <button type="button" data-skill-filter="access-compliance" title="准入合规技能"
+                aria-label="准入合规技能">准入合规</button>
             </div>
           </section>
         </section>
@@ -8018,8 +8169,10 @@
       <header class="agents-head page-head">
         <div class="agents-title page-title">
           <div class="title-tabs subscription-view-tabs" id="subscription-view-tabs" role="tablist" aria-label="任务视图">
-            <button class="title-tab is-active" type="button" data-subscription-view="list" role="tab" aria-selected="true">我的任务</button>
-            <button class="title-tab" type="button" data-subscription-view="calendar" role="tab" aria-selected="false">任务日历</button>
+            <button class="title-tab is-active" type="button" data-subscription-view="list" role="tab"
+              aria-selected="true">我的任务</button>
+            <button class="title-tab" type="button" data-subscription-view="calendar" role="tab"
+              aria-selected="false">任务日历</button>
           </div>
         </div>
         <div class="agents-head-tools page-head-tools">
@@ -8053,10 +8206,10 @@
         </div>
       </header>
 
-    <section class="subscription-workbench" id="subscription-workbench" aria-label="任务工作台">
+      <section class="subscription-workbench" id="subscription-workbench" aria-label="任务工作台">
         <section class="subscription-list-view" id="subscription-list-view" aria-label="任务列表视图">
-          <section class="subscription-overview" aria-label="精选任务示例">
-            <h3 class="subscription-overview-title">精选任务示例</h3>
+          <section class="subscription-overview" aria-label="推荐任务">
+            <h3 class="subscription-overview-title">推荐任务</h3>
             <div class="subscription-templates">
               <button class="subscription-template" type="button" data-template-task="intelligence-briefing">
                 <span class="subscription-template-main">
@@ -8115,7 +8268,8 @@
         <strong id="subscription-modal-title">创建任务</strong>
         <div class="subscription-modal-state">
           <span class="subscription-state-text" id="subscription-state-text">已启用</span>
-          <button class="subscription-draft-switch" id="subscription-draft-enabled" type="button" role="switch" aria-checked="true" aria-label="任务状态"></button>
+          <button class="subscription-draft-switch" id="subscription-draft-enabled" type="button" role="switch"
+            aria-checked="true" aria-label="任务状态"></button>
         </div>
         <button class="subscription-modal-close" id="subscription-modal-close" type="button" aria-label="关闭创建任务弹窗">
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -8132,7 +8286,8 @@
           </label>
           <label>
             <span>描述</span>
-            <textarea class="subscription-description-input" id="subscription-draft-description" placeholder="说明这个任务要持续关注什么，以及什么情况需要推送。"></textarea>
+            <textarea class="subscription-description-input" id="subscription-draft-description"
+              placeholder="说明这个任务要持续关注什么，以及什么情况需要推送。"></textarea>
           </label>
           <div class="subscription-field">
             <div class="subscription-field-head">
@@ -8142,13 +8297,15 @@
             <div class="subscription-schedule" id="subscription-schedule">
               <div class="subscription-schedule-row" id="subscription-schedule-row">
                 <div class="subscription-schedule-slot" data-schedule-slot="frequency">
-		                  <button class="subscription-schedule-select" type="button" data-schedule-menu-trigger="frequency" aria-expanded="false" aria-controls="subscription-frequency-menu">
-		                    <strong id="subscription-frequency-label">每天</strong>
+                  <button class="subscription-schedule-select" type="button" data-schedule-menu-trigger="frequency"
+                    aria-expanded="false" aria-controls="subscription-frequency-menu">
+                    <strong id="subscription-frequency-label">每天</strong>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="m6 9 6 6 6-6"></path>
                     </svg>
-		                  </button>
-                  <div class="subscription-schedule-popover" id="subscription-frequency-menu" data-schedule-menu="frequency" hidden>
+                  </button>
+                  <div class="subscription-schedule-popover" id="subscription-frequency-menu"
+                    data-schedule-menu="frequency" hidden>
                     <div class="subscription-option-list" id="subscription-frequency">
                       <button type="button" data-frequency="hourly">每小时</button>
                       <button type="button" class="is-active" data-frequency="daily">每天</button>
@@ -8157,56 +8314,67 @@
                     </div>
                   </div>
                 </div>
-                <div class="subscription-schedule-slot" data-schedule-control="weekly" data-schedule-slot="weekday" hidden>
-	                  <button class="subscription-schedule-select" type="button" data-schedule-menu-trigger="weekday" aria-expanded="false" aria-controls="subscription-weekday-menu">
-	                    <strong id="subscription-weekday-label">周一</strong>
+                <div class="subscription-schedule-slot" data-schedule-control="weekly" data-schedule-slot="weekday"
+                  hidden>
+                  <button class="subscription-schedule-select" type="button" data-schedule-menu-trigger="weekday"
+                    aria-expanded="false" aria-controls="subscription-weekday-menu">
+                    <strong id="subscription-weekday-label">周一</strong>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="m6 9 6 6 6-6"></path>
                     </svg>
-	                  </button>
-	                  <div class="subscription-schedule-popover" id="subscription-weekday-menu" data-schedule-menu="weekday" hidden>
-	                    <div class="subscription-weekday-options" id="subscription-weekdays" aria-label="选择周几">
-	                      <button type="button" data-weekday="1" aria-pressed="true">周一</button>
-	                      <button type="button" data-weekday="2" aria-pressed="false">周二</button>
-	                      <button type="button" data-weekday="3" aria-pressed="false">周三</button>
-	                      <button type="button" data-weekday="4" aria-pressed="false">周四</button>
-	                      <button type="button" data-weekday="5" aria-pressed="false">周五</button>
-	                      <button type="button" data-weekday="6" aria-pressed="false">周六</button>
-	                      <button type="button" data-weekday="0" aria-pressed="false">周日</button>
+                  </button>
+                  <div class="subscription-schedule-popover" id="subscription-weekday-menu" data-schedule-menu="weekday"
+                    hidden>
+                    <div class="subscription-weekday-options" id="subscription-weekdays" aria-label="选择周几">
+                      <button type="button" data-weekday="1" aria-pressed="true">周一</button>
+                      <button type="button" data-weekday="2" aria-pressed="false">周二</button>
+                      <button type="button" data-weekday="3" aria-pressed="false">周三</button>
+                      <button type="button" data-weekday="4" aria-pressed="false">周四</button>
+                      <button type="button" data-weekday="5" aria-pressed="false">周五</button>
+                      <button type="button" data-weekday="6" aria-pressed="false">周六</button>
+                      <button type="button" data-weekday="0" aria-pressed="false">周日</button>
                     </div>
                   </div>
                 </div>
-                <div class="subscription-schedule-slot" data-schedule-control="monthly" data-schedule-slot="monthday" hidden>
-	                  <button class="subscription-schedule-select" type="button" data-schedule-menu-trigger="monthday" aria-expanded="false" aria-controls="subscription-monthday-menu">
-	                    <strong id="subscription-monthday-label">1 日</strong>
+                <div class="subscription-schedule-slot" data-schedule-control="monthly" data-schedule-slot="monthday"
+                  hidden>
+                  <button class="subscription-schedule-select" type="button" data-schedule-menu-trigger="monthday"
+                    aria-expanded="false" aria-controls="subscription-monthday-menu">
+                    <strong id="subscription-monthday-label">1 日</strong>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="m6 9 6 6 6-6"></path>
                     </svg>
-	                  </button>
-	                  <div class="subscription-schedule-popover" id="subscription-monthday-menu" data-schedule-menu="monthday" hidden>
+                  </button>
+                  <div class="subscription-schedule-popover" id="subscription-monthday-menu"
+                    data-schedule-menu="monthday" hidden>
                     <input id="subscription-monthday" type="hidden" value="1">
-                    <div class="subscription-option-list subscription-monthday-options" id="subscription-monthdays"></div>
-	                  </div>
+                    <div class="subscription-option-list subscription-monthday-options" id="subscription-monthdays">
+                    </div>
+                  </div>
                 </div>
                 <div class="subscription-schedule-slot" data-schedule-time>
-                  <button class="subscription-schedule-select" type="button" data-schedule-menu-trigger="time" aria-expanded="false" aria-controls="subscription-time-menu">
+                  <button class="subscription-schedule-select" type="button" data-schedule-menu-trigger="time"
+                    aria-expanded="false" aria-controls="subscription-time-menu">
                     <strong id="subscription-time-label">09:00</strong>
                     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path d="m6 9 6 6 6-6"></path>
                     </svg>
                   </button>
-	                  <div class="subscription-schedule-popover" id="subscription-time-menu" data-schedule-menu="time" hidden>
-	                    <input id="subscription-time" type="hidden" value="09:00">
+                  <div class="subscription-schedule-popover" id="subscription-time-menu" data-schedule-menu="time"
+                    hidden>
+                    <input id="subscription-time" type="hidden" value="09:00">
                     <div class="subscription-time-column" data-time-column="hour" id="subscription-times-hour"></div>
-                    <div class="subscription-time-column" data-time-column="minute" id="subscription-times-minute"></div>
-	                  </div>
+                    <div class="subscription-time-column" data-time-column="minute" id="subscription-times-minute">
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
           <label>
             <span>提示词</span>
-            <textarea class="subscription-prompt-input" id="subscription-draft-prompt" placeholder="写清楚数据范围、判断口径、输出格式和触发条件。"></textarea>
+            <textarea class="subscription-prompt-input" id="subscription-draft-prompt"
+              placeholder="写清楚数据范围、判断口径、输出格式和触发条件。"></textarea>
           </label>
         </div>
         <div class="subscription-form-actions">
@@ -8219,7 +8387,8 @@
 
   <div class="detail-overlay" id="detail-overlay" hidden>
     <div class="detail-scrim" data-detail-close></div>
-    <aside class="agent-detail detail-drawer" id="detail-drawer" role="dialog" aria-modal="true" aria-labelledby="detail-drawer-title"></aside>
+    <aside class="agent-detail detail-drawer" id="detail-drawer" role="dialog" aria-modal="true"
+      aria-labelledby="detail-drawer-title"></aside>
   </div>
 
   <main class="view chat-view" id="chat-view">
@@ -8235,35 +8404,43 @@
           <div class="chat-composer-bar">
             <div class="composer-tools left" aria-label="分析选项">
               <span class="composer-action-wrap">
-                <button class="tool-button icon-only composer-action-trigger" type="button" data-action-menu-toggle aria-expanded="false" title="添加内容或指定调用" aria-label="添加内容或指定调用">
-                  <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <button class="tool-button icon-only composer-action-trigger" type="button" data-action-menu-toggle
+                  aria-expanded="false" title="添加内容或指定调用" aria-label="添加内容或指定调用">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                    aria-hidden="true">
                     <path d="M12 5v14"></path>
                     <path d="M5 12h14"></path>
                   </svg>
                 </button>
                 <div class="composer-action-menu" data-action-menu>
                   <button class="composer-action-item" type="button" data-upload-target="chat-upload">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <path d="M14.5 6.5 8.2 12.8a3 3 0 0 0 4.2 4.2l6.5-6.5a4.2 4.2 0 0 0-6-6L6.5 10.9a5.4 5.4 0 0 0 7.6 7.6l5.4-5.4"></path>
+                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                      aria-hidden="true">
+                      <path
+                        d="M14.5 6.5 8.2 12.8a3 3 0 0 0 4.2 4.2l6.5-6.5a4.2 4.2 0 0 0-6-6L6.5 10.9a5.4 5.4 0 0 0 7.6 7.6l5.4-5.4">
+                      </path>
                     </svg>
                     <span class="composer-action-copy"><strong>文件上传</strong><span>添加文档或图片</span></span>
                   </button>
                   <span class="composer-action-subwrap">
                     <button class="composer-action-item" type="button" data-submenu-trigger="agent">
-                      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                        aria-hidden="true">
                         <rect x="5" y="7" width="14" height="11" rx="3"></rect>
                         <path d="M12 7V4"></path>
                         <path d="M9 12h.01"></path>
                         <path d="M15 12h.01"></path>
                       </svg>
                       <span class="composer-action-copy"><strong>智能体</strong><span>指定业务角色</span></span>
-                      <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
                         <path d="m9 18 6-6-6-6"></path>
                       </svg>
                     </button>
                     <div class="capability-submenu" data-capability-submenu="agent">
                       <label class="capability-search">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                          aria-hidden="true">
                           <circle cx="11" cy="11" r="6"></circle>
                           <path d="m16 16 4 4"></path>
                         </svg>
@@ -8274,19 +8451,22 @@
                   </span>
                   <span class="composer-action-subwrap">
                     <button class="composer-action-item" type="button" data-submenu-trigger="skill">
-                      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                        aria-hidden="true">
                         <path d="M12 3 4 7l8 4 8-4-8-4Z"></path>
                         <path d="m4 12 8 4 8-4"></path>
                         <path d="m4 17 8 4 8-4"></path>
                       </svg>
                       <span class="composer-action-copy"><strong>技能</strong><span>指定业务能力</span></span>
-                      <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
                         <path d="m9 18 6-6-6-6"></path>
                       </svg>
                     </button>
                     <div class="capability-submenu" data-capability-submenu="skill">
                       <label class="capability-search">
-                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                          aria-hidden="true">
                           <circle cx="11" cy="11" r="6"></circle>
                           <path d="m16 16 4 4"></path>
                         </svg>
@@ -8297,8 +8477,8 @@
                   </span>
                 </div>
               </span>
-              <button class="tool-button" type="button" data-tool-toggle data-tool-id="deep-think" aria-pressed="false" title="深度思考"
-                aria-label="深度思考">
+              <button class="tool-button" type="button" data-tool-toggle data-tool-id="deep-think" aria-pressed="false"
+                title="深度思考" aria-label="深度思考">
                 <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <circle cx="6.5" cy="7" r="2"></circle>
                   <circle cx="17.5" cy="7" r="2"></circle>
@@ -8309,8 +8489,8 @@
                 </svg>
                 <span class="tool-label">深度思考</span>
               </button>
-              <button class="tool-button" type="button" data-tool-toggle data-tool-id="web-search" aria-pressed="false" title="Web Search"
-                aria-label="Web Search">
+              <button class="tool-button" type="button" data-tool-toggle data-tool-id="web-search" aria-pressed="false"
+                title="Web Search" aria-label="Web Search">
                 <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <circle cx="12" cy="12" r="9"></circle>
                   <path d="M3 12h18"></path>
@@ -10609,22 +10789,22 @@
       const normalizedQuery = query.trim().toLowerCase();
       const items = type === "agent"
         ? agentCatalog.map((agent) => ({
-            type: "agent",
-            id: agent.id,
-            name: agent.name,
-            description: agentDescription(agent),
-            searchable: [agent.name, agent.description, agent.categoryLabel, ...agent.subCategoryLabels, ...getAgentScenarioTexts(agent), ...getAgentPromptTexts(agent)].join(" ")
-          }))
+          type: "agent",
+          id: agent.id,
+          name: agent.name,
+          description: agentDescription(agent),
+          searchable: [agent.name, agent.description, agent.categoryLabel, ...agent.subCategoryLabels, ...getAgentScenarioTexts(agent), ...getAgentPromptTexts(agent)].join(" ")
+        }))
         : skillCatalog.filter(getSkillEnabled).map((skill) => {
-            const profile = getSkillDetailProfile(skill);
-            return {
-              type: "skill",
-              id: skill.id,
-              name: skill.name,
-              description: skillCategoryLine(skill),
-              searchable: [skill.name, profile.description, skillCategoryLine(skill), ...profile.triggerDo, ...profile.triggerAvoid, ...profile.inputs, ...profile.outputs].join(" ")
-            };
-          });
+          const profile = getSkillDetailProfile(skill);
+          return {
+            type: "skill",
+            id: skill.id,
+            name: skill.name,
+            description: skillCategoryLine(skill),
+            searchable: [skill.name, profile.description, skillCategoryLine(skill), ...profile.triggerDo, ...profile.triggerAvoid, ...profile.inputs, ...profile.outputs].join(" ")
+          };
+        });
       const visibleItems = normalizedQuery
         ? items.filter((item) => item.searchable.toLowerCase().includes(normalizedQuery))
         : items;
@@ -11284,8 +11464,8 @@
       4: "周四",
       5: "周五",
       6: "周六"
-	    };
-	    const subscriptionWeekdayOrder = ["1", "2", "3", "4", "5", "6", "0"];
+    };
+    const subscriptionWeekdayOrder = ["1", "2", "3", "4", "5", "6", "0"];
     const subscriptionHourOptions = Array.from({ length: 24 }, (_, index) => String(index).padStart(2, "0"));
     const subscriptionMinuteOptions = Array.from({ length: 60 }, (_, index) => String(index).padStart(2, "0"));
     const defaultSubscriptionMinuteStep = 15;
@@ -11347,7 +11527,7 @@
       setSubscriptionTimeValue(`${hour}:${minute}`);
     }
 
-	    function getSelectedSubscriptionWeekdays() {
+    function getSelectedSubscriptionWeekdays() {
       const selected = Array.from(subscriptionWeekdays.querySelectorAll("[data-weekday][aria-pressed='true']"))
         .map((button) => button.dataset.weekday)
         .filter(Boolean);
@@ -11850,12 +12030,12 @@
         setSubscriptionFrequency("weekly");
         return;
       }
-	      if (value.includes("每月")) {
-	        const dayMatch = value.match(/每月\s*(\d{1,2})\s*日/);
-	        if (dayMatch) setSubscriptionMonthdayValue(dayMatch[1]);
-	        setSubscriptionFrequency("monthly");
-	        return;
-	      }
+      if (value.includes("每月")) {
+        const dayMatch = value.match(/每月\s*(\d{1,2})\s*日/);
+        if (dayMatch) setSubscriptionMonthdayValue(dayMatch[1]);
+        setSubscriptionFrequency("monthly");
+        return;
+      }
       setSubscriptionFrequency("daily");
     }
 
@@ -12001,13 +12181,13 @@
             </div>
             <div class="subscription-calendar-events">
               ${dayEvents.length ? dayEvents.map(({ task, date: eventDate }) => {
-                return `
+          return `
                   <button class="subscription-calendar-event" type="button" data-calendar-task="${escapeHtml(task.id)}" title="编辑任务：${escapeHtml(task.name)}">
                     <span class="subscription-calendar-time">${escapeHtml(formatSubscriptionCalendarTime(eventDate))}</span>
                     <strong class="subscription-calendar-event-title">${escapeHtml(task.name)}</strong>
                   </button>
                 `;
-              }).join("") : `<span class="subscription-calendar-day-empty">暂无安排</span>`}
+        }).join("") : `<span class="subscription-calendar-day-empty">暂无安排</span>`}
             </div>
           </section>
         `;
@@ -12426,6 +12606,14 @@
       reportFilterToggle.setAttribute("aria-expanded", String(open));
     }
 
+    function setReportsSearchExpanded(expanded) {
+      reportsSearch.closest(".reports-search")?.classList.toggle("is-expanded", expanded);
+    }
+
+    function syncReportsSearchExpanded() {
+      setReportsSearchExpanded(Boolean(document.activeElement === reportsSearch || reportsSearch.value.trim()));
+    }
+
     function hasGeneratedReport(item) {
       return Boolean(item.messagesHtml && item.messagesHtml.includes("data-preview-report"));
     }
@@ -12568,12 +12756,12 @@
         const documents = (task.documents || []).length
           ? task.documents
           : [{
-              id: "summary",
-              title: task.delivery && task.delivery !== "等待首次推送" ? `${task.name}运行摘要` : `${task.name}任务配置摘要`,
-              meta: "DOCX",
-              summary: task.delivery && task.delivery !== "等待首次推送" ? task.delivery : task.summary,
-              time: task.lastRun || "刚刚"
-            }];
+            id: "summary",
+            title: task.delivery && task.delivery !== "等待首次推送" ? `${task.name}运行摘要` : `${task.name}任务配置摘要`,
+            meta: "DOCX",
+            summary: task.delivery && task.delivery !== "等待首次推送" ? task.delivery : task.summary,
+            time: task.lastRun || "刚刚"
+          }];
         return documents.map((doc, index) => ({
           id: index === 0 ? getSubscriptionReportId(task.id) : `${getSubscriptionReportId(task.id)}-${doc.id || index}`,
           source: "subscription",
@@ -12854,6 +13042,7 @@
     function renderReports() {
       const reports = buildReportCatalog();
       const query = reportsSearch.value.trim().toLowerCase();
+      syncReportsSearchExpanded();
       const visibleReports = reports.filter((item) => {
         const searchable = [
           item.project,
@@ -12867,7 +13056,6 @@
         return matchesSource && matchesFilter && (!query || searchable.includes(query));
       });
       reportsGrid.classList.toggle("is-task-assets", activeReportSource === "subscription");
-      reportsGrid.classList.toggle("subscription-grid", activeReportSource === "subscription");
       reportSourceTabs.querySelectorAll("[data-report-source-filter]").forEach((button) => {
         const isActive = button.dataset.reportSourceFilter === activeReportSource;
         button.classList.toggle("is-active", isActive);
@@ -12936,9 +13124,9 @@
             </article>
           `;
         }).join("");
-      reportsLimit.textContent = "";
-      reportsEmpty.textContent = query ? "没有匹配的资产" : "暂无来自任务的资产";
-      reportsBoard.classList.toggle("has-reports", visibleReports.length > 0);
+        reportsLimit.textContent = "";
+        reportsEmpty.textContent = query ? "没有匹配的资产" : "暂无来自任务的资产";
+        reportsBoard.classList.toggle("has-reports", visibleReports.length > 0);
         if (reportsView.classList.contains("preview-open")) {
           const activeReport = visibleReports.find((item) => item.id === activeReportIndex);
           if (activeReport) {
@@ -14424,7 +14612,16 @@
       closeHistoryMenus();
       renderHistory();
     });
-    reportsSearch.addEventListener("input", renderReports);
+    reportsSearch.closest(".reports-search")?.addEventListener("click", () => {
+      setReportsSearchExpanded(true);
+      reportsSearch.focus();
+    });
+    reportsSearch.addEventListener("focus", () => setReportsSearchExpanded(true));
+    reportsSearch.addEventListener("blur", syncReportsSearchExpanded);
+    reportsSearch.addEventListener("input", () => {
+      syncReportsSearchExpanded();
+      renderReports();
+    });
     reportSourceTabs.addEventListener("click", (event) => {
       const button = event.target.closest("[data-report-source-filter]");
       if (!button) return;
@@ -14880,13 +15077,13 @@
         skillsView?.classList.remove("active");
         subscriptionsView.classList.remove("active");
         chatView.classList.add("active");
-      setSidebarActive("");
-      applyToolState(questionForm, activeToolState);
-      applyToolState(chatForm, activeToolState);
-      renderCapabilityControls();
-      requestAnimationFrame(() => {
-        messages.scrollTo({ top: messages.scrollHeight, behavior: "auto" });
-      });
+        setSidebarActive("");
+        applyToolState(questionForm, activeToolState);
+        applyToolState(chatForm, activeToolState);
+        renderCapabilityControls();
+        requestAnimationFrame(() => {
+          messages.scrollTo({ top: messages.scrollHeight, behavior: "auto" });
+        });
         return;
       }
       if (location.hash !== "#chat") {
