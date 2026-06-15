@@ -3549,11 +3549,15 @@
 
     .detail-drawer.is-skill-detail {
       width: min(900px, calc(100vw - 56px));
-      height: min(780px, calc(100dvh - 56px));
       max-height: min(780px, calc(100dvh - 56px));
       border-color: rgba(221, 228, 236, 0.92);
       border-radius: 18px;
       box-shadow: 0 26px 80px rgba(19, 28, 44, 0.2);
+      overflow: auto;
+    }
+
+    .detail-drawer.is-agent-detail {
+      height: min(780px, calc(100dvh - 56px));
       overflow: hidden;
     }
 
@@ -3980,20 +3984,30 @@
     }
 
     .skill-detail-shell {
-      height: 100%;
       min-height: 0;
       display: grid;
+      grid-template-rows: auto auto;
+      overflow: visible;
+      background: #ffffff;
+    }
+
+    .detail-drawer.is-agent-detail .skill-detail-shell {
+      height: 100%;
       grid-template-rows: auto minmax(0, 1fr);
       overflow: hidden;
-      background: #ffffff;
     }
 
     .skill-detail-body {
       min-height: 0;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: auto auto;
       gap: 16px;
       padding: 18px 22px 22px;
+      overflow: visible;
+    }
+
+    .detail-drawer.is-agent-detail .skill-detail-body {
+      grid-template-rows: auto minmax(0, 1fr);
       overflow: hidden;
     }
 
@@ -7486,8 +7500,11 @@
 
       .detail-drawer.is-skill-detail {
         width: calc(100vw - 24px);
-        height: calc(100dvh - 24px);
         max-height: calc(100dvh - 24px);
+      }
+
+      .detail-drawer.is-agent-detail {
+        height: calc(100dvh - 24px);
       }
 
       .agent-detail-top {
@@ -7542,9 +7559,12 @@
       }
 
       .skill-detail-body {
-        grid-template-rows: auto minmax(0, 1fr);
         gap: 14px;
         padding: 16px 18px 18px;
+      }
+
+      .detail-drawer.is-agent-detail .skill-detail-body {
+        grid-template-rows: auto minmax(0, 1fr);
       }
 
       .skill-detail-title strong {
@@ -11186,7 +11206,7 @@
         `;
       }
       return `
-        <div class="skill-detail-shell">
+        <div class="skill-detail-shell agent-detail-shell">
           <section class="skill-detail-hero" aria-label="智能体概览">
             <div class="skill-detail-title-row">
               <div class="skill-detail-title">
@@ -11327,6 +11347,7 @@
     function openDetail(html) {
       detailDrawer.innerHTML = html;
       detailDrawer.classList.toggle("is-skill-detail", html.includes("skill-detail-shell"));
+      detailDrawer.classList.toggle("is-agent-detail", html.includes("agent-detail-shell"));
       detailOverlay.hidden = false;
       document.body.classList.add("detail-open");
       detailDrawer.querySelector("[data-detail-close]")?.focus();
@@ -11336,6 +11357,7 @@
       detailOverlay.hidden = true;
       document.body.classList.remove("detail-open");
       detailDrawer.classList.remove("is-skill-detail");
+      detailDrawer.classList.remove("is-agent-detail");
     }
 
     function getSkillSubLabels(skill) {
