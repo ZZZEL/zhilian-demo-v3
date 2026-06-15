@@ -4130,7 +4130,8 @@
     }
 
     .agent-detail-schema {
-      grid-template-rows: auto auto minmax(260px, 1fr);
+      grid-template-rows: max-content max-content max-content;
+      align-items: start;
       overflow: auto;
       padding-right: 2px;
     }
@@ -4148,10 +4149,13 @@
     }
 
     .agent-detail-schema .agent-schema-item.is-scenario {
+      align-self: stretch;
       min-height: 220px;
     }
 
     .agent-detail-schema .agent-schema-item:not(.is-prompt):not(.is-scenario) {
+      height: fit-content;
+      align-self: start;
       min-height: 132px;
     }
 
@@ -4168,7 +4172,7 @@
     }
 
     .agent-detail-schema .agent-schema-item.is-prompt {
-      max-height: none;
+      max-height: min(336px, 46vh);
     }
 
     .skill-schema-item h3 {
