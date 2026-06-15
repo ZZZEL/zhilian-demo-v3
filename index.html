@@ -3554,6 +3554,7 @@
       border-color: rgba(221, 228, 236, 0.92);
       border-radius: 18px;
       box-shadow: 0 26px 80px rgba(19, 28, 44, 0.2);
+      overflow: hidden;
     }
 
     .detail-close {
@@ -4125,11 +4126,18 @@
       grid-template-rows: minmax(0, auto) minmax(0, auto);
       gap: 12px;
       align-items: stretch;
+      overflow: visible;
+    }
+
+    .agent-detail-schema {
+      grid-template-rows: auto auto minmax(260px, 1fr);
       overflow: auto;
+      padding-right: 2px;
     }
 
     .skill-schema-item {
       min-width: 0;
+      min-height: 0;
       display: grid;
       align-content: start;
       gap: 10px;
@@ -4137,6 +4145,18 @@
       border: 1px solid rgba(221, 228, 236, 0.86);
       border-radius: 12px;
       background: #ffffff;
+    }
+
+    .agent-detail-schema .agent-schema-item:not(.is-prompt) {
+      overflow: auto;
+    }
+
+    .agent-detail-schema .agent-schema-item.is-scenario {
+      min-height: 220px;
+    }
+
+    .agent-detail-schema .agent-schema-item:not(.is-prompt):not(.is-scenario) {
+      min-height: 132px;
     }
 
     .skill-schema-item.is-scenario {
@@ -4149,6 +4169,10 @@
       min-height: 260px;
       max-height: min(336px, 46vh);
       overflow: hidden;
+    }
+
+    .agent-detail-schema .agent-schema-item.is-prompt {
+      max-height: none;
     }
 
     .skill-schema-item h3 {
@@ -7539,6 +7563,10 @@
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: none;
         gap: 12px;
+      }
+
+      .agent-detail-schema {
+        grid-template-rows: none;
       }
 
       .skill-schema-item {
@@ -11176,7 +11204,7 @@
           </section>
           <div class="skill-detail-body">
             ${capabilityTaxonomyHtml(agent.categoryLabel, getAgentSecondaryLabels(agent, 6))}
-            <section class="skill-detail-schema" aria-label="智能体说明">
+            <section class="skill-detail-schema agent-detail-schema" aria-label="智能体说明">
               <div class="skill-schema-item agent-schema-item is-scenario">
                 <h3>适用场景</h3>
                 ${agentScenariosHtml(agent)}
