@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>port-schedule-26w21</title>
+<style>
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#f6f7f9;color:#1f2937;font-family:Inter,Arial,"PingFang SC","Microsoft YaHei",sans-serif;font-size:12px;line-height:1.35}
+.excel-app{height:100vh;min-height:420px;display:grid;grid-template-rows:30px 32px minmax(0,1fr) 34px;background:#fff;border-left:1px solid #d8dee8}
+.excel-titlebar{display:flex;align-items:center;gap:8px;padding:0 10px;background:#107c41;color:#fff;font-weight:700;min-width:0}
+.excel-mark{width:18px;height:18px;border-radius:2px;background:#fff;color:#107c41;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex:0 0 auto}
+.excel-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.formula-bar{display:grid;grid-template-columns:58px 26px minmax(0,1fr);align-items:center;gap:6px;padding:4px 8px;background:#f8fafc;border-bottom:1px solid #d8dee8}
+.name-box,.fx-box,.formula-input{height:23px;border:1px solid #cfd7e3;background:#fff;border-radius:2px;display:flex;align-items:center;padding:0 7px;overflow:hidden;color:#374151}
+.fx-box{justify-content:center;color:#6b7280;font-style:italic;font-weight:700}
+.formula-input{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:nowrap;text-overflow:ellipsis}
+.workbook{min-height:0;background:#fff;overflow:hidden}
+.sheet-panel{display:none;height:100%}
+.sheet-panel.is-active{display:block}
+.grid-scroll{height:100%;overflow:auto;background:#fff}
+.excel-grid{border-collapse:collapse;table-layout:fixed;background:#fff;width:max-content;min-width:100%}
+.row-number-col{width:42px}
+.corner,.col-head,.row-head{position:sticky;background:#f3f4f6;color:#4b5563;font-weight:600;border:1px solid #d8dee8;z-index:2;text-align:center;user-select:none}
+.corner{left:0;top:0;width:42px;height:24px;z-index:4}
+.col-head{top:0;height:24px}
+.row-head{left:0;width:42px;height:27px;z-index:3}
+.cell{height:27px;padding:3px 7px;border:1px solid #e1e5ec;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#fff;vertical-align:middle;color:#202938}
+.header-cell{font-weight:700;background:#eaf1ff;color:#111827}
+.formula-cell{color:#0f766e;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.status-cell:not(.header-cell){font-weight:700}
+.cell:hover{outline:2px solid #21a366;outline-offset:-2px}
+.sheet-tabs{display:flex;align-items:end;gap:2px;padding:0 8px;background:#f3f4f6;border-top:1px solid #d8dee8;overflow-x:auto}
+.sheet-tab{height:28px;padding:0 16px;border:1px solid #cfd7e3;border-bottom:0;border-radius:3px 3px 0 0;background:#e9edf3;color:#374151;font:inherit;font-weight:650;cursor:pointer;white-space:nowrap}
+.sheet-tab.is-active{background:#fff;color:#107c41;border-top:3px solid #107c41}
+@media(max-width:720px){.excel-app{grid-template-rows:28px 31px minmax(0,1fr) 34px}.sheet-tab{padding:0 12px}}
+</style>
+</head>
+<body>
+<div class="excel-app">
+  <header class="excel-titlebar"><span class="excel-mark">X</span><span class="excel-name">port-schedule-26w21.xlsx</span></header>
+  <div class="formula-bar"><div class="name-box" id="name-box">A1</div><div class="fx-box">fx</div><div class="formula-input" id="formula-input"></div></div>
+  <main class="workbook">
+          <section class="sheet-panel is-active" data-sheet-panel="0" aria-label="复核摘要">
+            <div class="grid-scroll"><table class="excel-grid"><colgroup><col class="row-number-col"><col style="width:92px"><col style="width:210px"><col style="width:210px"></colgroup><thead><tr><th class="corner"></th><th class="col-head">A</th><th class="col-head">B</th><th class="col-head">C</th></tr></thead><tbody><tr><th class="row-head">1</th><td class="cell header-cell" data-cell="A1" title="指标">指标</td><td class="cell header-cell" data-cell="B1" title="结果">结果</td><td class="cell header-cell" data-cell="C1" title="说明">说明</td></tr><tr><th class="row-head">2</th><td class="cell" data-cell="A2" title="复核周次">复核周次</td><td class="cell" data-cell="B2" title="26W21">26W21</td><td class="cell" data-cell="C2" title="补录 W21 船期变更、卸港效率和客户交付窗口修订记录，区分已确认异常与待复核信息。">补录 W21 船期变更、卸港效率和客户交付窗口修订记录，区分已确认异常与待复核信息。</td></tr><tr><th class="row-head">3</th><td class="cell" data-cell="A3" title="覆盖港口">覆盖港口</td><td class="cell formula-cell" data-cell="B3" title="=COUNTA(港口明细!A2:A200)">=COUNTA(港口明细!A2:A200)</td><td class="cell" data-cell="C3" title="按港口明细表自动统计">按港口明细表自动统计</td></tr><tr><th class="row-head">4</th><td class="cell" data-cell="A4" title="异常港区">异常港区</td><td class="cell formula-cell" data-cell="B4" title="=COUNTIF(港口明细!J2:J200,&quot;&lt;&gt;正常&quot;)">=COUNTIF(港口明细!J2:J200,&quot;&lt;&gt;正常&quot;)</td><td class="cell" data-cell="C4" title="关注或待复核状态">关注或待复核状态</td></tr><tr><th class="row-head">5</th><td class="cell" data-cell="A5" title="平均排队船舶">平均排队船舶</td><td class="cell formula-cell" data-cell="B5" title="=ROUND(AVERAGE(港口明细!E2:E200),1)">=ROUND(AVERAGE(港口明细!E2:E200),1)</td><td class="cell" data-cell="C5" title="按重点港口样本计算">按重点港口样本计算</td></tr><tr><th class="row-head">6</th><td class="cell" data-cell="A6" title="合计库存万吨">合计库存万吨</td><td class="cell formula-cell" data-cell="B6" title="=SUM(港口明细!B2:B200)">=SUM(港口明细!B2:B200)</td><td class="cell" data-cell="C6" title="自动汇总港口库存">自动汇总港口库存</td></tr><tr><th class="row-head">7</th><td class="cell" data-cell="A7" title="平均仓容利用率">平均仓容利用率</td><td class="cell formula-cell" data-cell="B7" title="=ROUND(AVERAGE(港口明细!H2:H200),1)&amp;&quot;%&quot;">=ROUND(AVERAGE(港口明细!H2:H200),1)&amp;&quot;%&quot;</td><td class="cell" data-cell="C7" title="高于 85% 需关注">高于 85% 需关注</td></tr><tr><th class="row-head">8</th><td class="cell" data-cell="A8" title="生成时间">生成时间</td><td class="cell" data-cell="B8" title="5月28日 14:27">5月28日 14:27</td><td class="cell" data-cell="C8" title="资产编号：port-schedule-26w21">资产编号：port-schedule-26w21</td></tr></tbody></table></div>
+          </section>
+        
+          <section class="sheet-panel" data-sheet-panel="1" aria-label="港口明细">
+            <div class="grid-scroll"><table class="excel-grid"><colgroup><col class="row-number-col"><col style="width:92px"><col style="width:74px"><col style="width:74px"><col style="width:74px"><col style="width:74px"><col style="width:74px"><col style="width:74px"><col style="width:82px"><col style="width:102px"><col style="width:74px"></colgroup><thead><tr><th class="corner"></th><th class="col-head">A</th><th class="col-head">B</th><th class="col-head">C</th><th class="col-head">D</th><th class="col-head">E</th><th class="col-head">F</th><th class="col-head">G</th><th class="col-head">H</th><th class="col-head">I</th><th class="col-head">J</th></tr></thead><tbody><tr><th class="row-head">1</th><td class="cell header-cell" data-cell="A1" title="港口">港口</td><td class="cell header-cell" data-cell="B1" title="库存万吨">库存万吨</td><td class="cell header-cell" data-cell="C1" title="上周库存">上周库存</td><td class="cell header-cell" data-cell="D1" title="周变化">周变化</td><td class="cell header-cell" data-cell="E1" title="排队船舶">排队船舶</td><td class="cell header-cell" data-cell="F1" title="预计到港">预计到港</td><td class="cell header-cell" data-cell="G1" title="卸港效率%">卸港效率%</td><td class="cell header-cell" data-cell="H1" title="仓容利用率%">仓容利用率%</td><td class="cell header-cell" data-cell="I1" title="交付影响">交付影响</td><td class="cell header-cell" data-cell="J1" title="状态">状态</td></tr><tr><th class="row-head">2</th><td class="cell" data-cell="A2" title="青岛港">青岛港</td><td class="cell" data-cell="B2" title="146">146</td><td class="cell" data-cell="C2" title="149">149</td><td class="cell" data-cell="D2" title="-3">-3</td><td class="cell" data-cell="E2" title="7">7</td><td class="cell" data-cell="F2" title="06-22">06-22</td><td class="cell" data-cell="G2" title="79">79</td><td class="cell" data-cell="H2" title="83">83</td><td class="cell" data-cell="I2" title="等待港区公告">等待港区公告</td><td class="cell status-cell" data-cell="J2" title="待复核">待复核</td></tr><tr><th class="row-head">3</th><td class="cell" data-cell="A3" title="日照港">日照港</td><td class="cell" data-cell="B3" title="157">157</td><td class="cell" data-cell="C3" title="154">154</td><td class="cell" data-cell="D3" title="3">3</td><td class="cell" data-cell="E3" title="8">8</td><td class="cell" data-cell="F3" title="06-24">06-24</td><td class="cell" data-cell="G3" title="93">93</td><td class="cell" data-cell="H3" title="88">88</td><td class="cell" data-cell="I3" title="需调整转运计划">需调整转运计划</td><td class="cell status-cell" data-cell="J3" title="待复核">待复核</td></tr><tr><th class="row-head">4</th><td class="cell" data-cell="A4" title="连云港">连云港</td><td class="cell" data-cell="B4" title="168">168</td><td class="cell" data-cell="C4" title="159">159</td><td class="cell" data-cell="D4" title="9">9</td><td class="cell" data-cell="E4" title="9">9</td><td class="cell" data-cell="F4" title="06-02">06-02</td><td class="cell" data-cell="G4" title="86">86</td><td class="cell" data-cell="H4" title="62">62</td><td class="cell" data-cell="I4" title="关注卸港效率">关注卸港效率</td><td class="cell status-cell" data-cell="J4" title="待复核">待复核</td></tr><tr><th class="row-head">5</th><td class="cell" data-cell="A5" title="南通港">南通港</td><td class="cell" data-cell="B5" title="179">179</td><td class="cell" data-cell="C5" title="191">191</td><td class="cell" data-cell="D5" title="-12">-12</td><td class="cell" data-cell="E5" title="2">2</td><td class="cell" data-cell="F5" title="06-04">06-04</td><td class="cell" data-cell="G5" title="82">82</td><td class="cell" data-cell="H5" title="67">67</td><td class="cell" data-cell="I5" title="暂无显著影响">暂无显著影响</td><td class="cell status-cell" data-cell="J5" title="正常">正常</td></tr><tr><th class="row-head">6</th><td class="cell" data-cell="A6" title="天津港">天津港</td><td class="cell" data-cell="B6" title="190">190</td><td class="cell" data-cell="C6" title="196">196</td><td class="cell" data-cell="D6" title="-6">-6</td><td class="cell" data-cell="E6" title="3">3</td><td class="cell" data-cell="F6" title="06-06">06-06</td><td class="cell" data-cell="G6" title="88">88</td><td class="cell" data-cell="H6" title="72">72</td><td class="cell" data-cell="I6" title="需复核客户窗口">需复核客户窗口</td><td class="cell status-cell" data-cell="J6" title="正常">正常</td></tr><tr><th class="row-head">7</th><td class="cell" data-cell="A7" title="防城港">防城港</td><td class="cell" data-cell="B7" title="201">201</td><td class="cell" data-cell="C7" title="201">201</td><td class="cell" data-cell="D7" title="0">0</td><td class="cell" data-cell="E7" title="4">4</td><td class="cell" data-cell="F7" title="06-08">06-08</td><td class="cell" data-cell="G7" title="76">76</td><td class="cell" data-cell="H7" title="77">77</td><td class="cell" data-cell="I7" title="部分批次可能延后">部分批次可能延后</td><td class="cell status-cell" data-cell="J7" title="待复核">待复核</td></tr><tr><th class="row-head">8</th><td class="cell" data-cell="A8" title="曹妃甸港">曹妃甸港</td><td class="cell" data-cell="B8" title="212">212</td><td class="cell" data-cell="C8" title="206">206</td><td class="cell" data-cell="D8" title="6">6</td><td class="cell" data-cell="E8" title="5">5</td><td class="cell" data-cell="F8" title="06-10">06-10</td><td class="cell" data-cell="G8" title="91">91</td><td class="cell" data-cell="H8" title="82">82</td><td class="cell" data-cell="I8" title="确认入库节奏">确认入库节奏</td><td class="cell status-cell" data-cell="J8" title="正常">正常</td></tr><tr><th class="row-head">9</th><td class="cell" data-cell="A9" title="广州港">广州港</td><td class="cell" data-cell="B9" title="223">223</td><td class="cell" data-cell="C9" title="211">211</td><td class="cell" data-cell="D9" title="12">12</td><td class="cell" data-cell="E9" title="6">6</td><td class="cell" data-cell="F9" title="06-12">06-12</td><td class="cell" data-cell="G9" title="84">84</td><td class="cell" data-cell="H9" title="87">87</td><td class="cell" data-cell="I9" title="关注仓容预警">关注仓容预警</td><td class="cell status-cell" data-cell="J9" title="关注">关注</td></tr></tbody></table></div>
+          </section>
+        
+          <section class="sheet-panel" data-sheet-panel="2" aria-label="建议动作">
+            <div class="grid-scroll"><table class="excel-grid"><colgroup><col class="row-number-col"><col style="width:92px"><col style="width:172px"><col style="width:74px"><col style="width:74px"></colgroup><thead><tr><th class="corner"></th><th class="col-head">A</th><th class="col-head">B</th><th class="col-head">C</th><th class="col-head">D</th></tr></thead><tbody><tr><th class="row-head">1</th><td class="cell header-cell" data-cell="A1" title="动作">动作</td><td class="cell header-cell" data-cell="B1" title="触发依据">触发依据</td><td class="cell header-cell" data-cell="C1" title="责任方向">责任方向</td><td class="cell header-cell" data-cell="D1" title="优先级">优先级</td></tr><tr><th class="row-head">2</th><td class="cell" data-cell="A2" title="复核重点客户交付窗口">复核重点客户交付窗口</td><td class="cell" data-cell="B2" title="船期推迟或卸港效率低于 80%">船期推迟或卸港效率低于 80%</td><td class="cell" data-cell="C2" title="运营负责人">运营负责人</td><td class="cell status-cell" data-cell="D2" title="高">高</td></tr><tr><th class="row-head">3</th><td class="cell" data-cell="A3" title="更新入库节奏">更新入库节奏</td><td class="cell" data-cell="B3" title="库存下降且排船增加">库存下降且排船增加</td><td class="cell" data-cell="C3" title="港口运营">港口运营</td><td class="cell" data-cell="D3" title="中">中</td></tr><tr><th class="row-head">4</th><td class="cell" data-cell="A4" title="补充港区公告来源">补充港区公告来源</td><td class="cell" data-cell="B4" title="公告与船期表存在时间差">公告与船期表存在时间差</td><td class="cell" data-cell="C4" title="资料运营">资料运营</td><td class="cell" data-cell="D4" title="中">中</td></tr><tr><th class="row-head">5</th><td class="cell" data-cell="A5" title="确认转运计划">确认转运计划</td><td class="cell" data-cell="B5" title="仓容利用率高于 85%">仓容利用率高于 85%</td><td class="cell" data-cell="C5" title="物流调度">物流调度</td><td class="cell status-cell" data-cell="D5" title="高">高</td></tr></tbody></table></div>
+          </section>
+        </main>
+  <footer class="sheet-tabs" role="tablist"><button class="sheet-tab is-active" type="button" data-sheet-tab="0">复核摘要</button><button class="sheet-tab" type="button" data-sheet-tab="1">港口明细</button><button class="sheet-tab" type="button" data-sheet-tab="2">建议动作</button></footer>
+</div>
+<script>
+const tabs = Array.from(document.querySelectorAll('[data-sheet-tab]'));
+const panels = Array.from(document.querySelectorAll('[data-sheet-panel]'));
+const nameBox = document.getElementById('name-box');
+const formulaInput = document.getElementById('formula-input');
+tabs.forEach((tab) => tab.addEventListener('click', () => {
+  const index = tab.dataset.sheetTab;
+  tabs.forEach((item) => item.classList.toggle('is-active', item === tab));
+  panels.forEach((panel) => panel.classList.toggle('is-active', panel.dataset.sheetPanel === index));
+  nameBox.textContent = 'A1';
+  formulaInput.textContent = '';
+}));
+document.addEventListener('click', (event) => {
+  const cell = event.target.closest('.cell');
+  if (!cell) return;
+  nameBox.textContent = cell.dataset.cell || '';
+  formulaInput.textContent = cell.textContent || '';
+});
+</script>
+</body>
+</html>
