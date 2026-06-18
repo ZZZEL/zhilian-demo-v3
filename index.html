@@ -1663,6 +1663,8 @@
       position: relative;
       display: inline-flex;
       min-width: 0;
+      --composer-menu-bridge: 12px;
+      --composer-submenu-bridge: 16px;
     }
 
     .composer-action-wrap::after {
@@ -1671,7 +1673,7 @@
       left: 0;
       top: 100%;
       width: 100%;
-      height: 4px;
+      height: var(--composer-menu-bridge);
     }
 
     .composer-action-trigger {
@@ -1682,7 +1684,7 @@
     .composer-action-menu {
       position: absolute;
       left: 0;
-      top: calc(100% + 2px);
+      top: calc(100% + 6px);
       z-index: 35;
       width: 192px;
       display: grid;
@@ -1715,10 +1717,10 @@
     .composer-action-subwrap::after {
       content: "";
       position: absolute;
-      top: 0;
-      left: 100%;
-      width: 4px;
-      height: 100%;
+      top: -8px;
+      left: calc(100% - 2px);
+      width: var(--composer-submenu-bridge);
+      height: calc(100% + 16px);
     }
 
     .composer-action-menu>.composer-action-subwrap {
@@ -1793,7 +1795,7 @@
 
     .capability-submenu {
       position: absolute;
-      left: calc(100% + 4px);
+      left: calc(100% + 8px);
       top: 0;
       z-index: 36;
       width: min(282px, calc(100vw - 36px));
@@ -1809,6 +1811,15 @@
       pointer-events: none;
       transform: translateX(-4px);
       transition: opacity 140ms ease, transform 140ms ease, visibility 140ms ease;
+    }
+
+    .capability-submenu::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      right: 100%;
+      width: var(--composer-submenu-bridge);
+      height: calc(100% + 16px);
     }
 
     .composer-action-subwrap:hover .capability-submenu {
@@ -1917,7 +1928,7 @@
 
     .chat-composer .composer-action-menu {
       top: auto;
-      bottom: calc(100% + 2px);
+      bottom: calc(100% + 6px);
       transform: translateY(3px);
     }
 
@@ -2246,6 +2257,10 @@
       overflow: hidden;
     }
 
+    .agents-shell.subscriptions-shell {
+      padding-bottom: 18px;
+    }
+
     .reports-shell {
       width: 100%;
       height: 100%;
@@ -2253,13 +2268,6 @@
       padding-right: var(--page-gutter);
       padding-left: var(--page-gutter);
       overflow: hidden;
-    }
-
-    .subscriptions-shell {
-      width: 100%;
-      padding-right: var(--page-gutter);
-      padding-left: var(--page-gutter);
-      padding-bottom: 18px;
     }
 
     .agents-view:not(.subscriptions-view) .agents-shell {
@@ -2280,14 +2288,6 @@
     }
 
     .reports-shell > .reports-head {
-      width: min(1360px, 100%);
-      margin: 0 auto;
-      padding-right: 0;
-      padding-left: 0;
-      box-sizing: border-box;
-    }
-
-    .subscriptions-shell > .agents-head {
       width: min(1360px, 100%);
       margin: 0 auto;
       padding-right: 0;
@@ -5442,8 +5442,7 @@
       min-height: 0;
       display: grid;
       grid-template-columns: minmax(0, 1fr);
-      overflow-x: hidden;
-      overflow-y: auto;
+      overflow: hidden;
     }
 
     .subscriptions-view .agents-head {
@@ -5455,16 +5454,11 @@
     }
 
     .subscription-list-view {
-      width: min(1360px, 100%);
-      min-height: 100%;
+      min-height: 0;
       display: grid;
-      grid-template-rows: auto auto;
+      grid-template-rows: auto minmax(0, 1fr);
       gap: 16px;
-      margin: 0 auto;
-      padding-right: 0;
-      padding-left: 0;
-      box-sizing: border-box;
-      overflow: visible;
+      overflow: hidden;
     }
 
     .subscription-list-view[hidden],
@@ -5473,16 +5467,11 @@
     }
 
     .subscription-calendar-view {
-      width: min(1360px, 100%);
       min-width: 0;
       min-height: 0;
       display: grid;
       grid-template-rows: minmax(0, 1fr);
       gap: 0;
-      margin: 0 auto;
-      padding-right: 0;
-      padding-left: 0;
-      box-sizing: border-box;
       overflow: hidden;
     }
 
@@ -5857,9 +5846,9 @@
     .subscription-directory {
       min-height: 0;
       display: grid;
-      grid-template-rows: auto auto;
+      grid-template-rows: auto minmax(0, 1fr);
       gap: 10px;
-      overflow: visible;
+      overflow: hidden;
     }
 
     .subscription-list-head {
@@ -5896,10 +5885,9 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       align-content: start;
       gap: 12px;
-      height: auto;
-      max-height: none;
-      overflow: visible;
-      padding: 2px 0 14px;
+      height: 100%;
+      overflow: auto;
+      padding: 2px 4px 14px 2px;
       scroll-padding-bottom: 10px;
       box-sizing: border-box;
     }
@@ -10010,6 +9998,122 @@
           }
         ]
       },
+      "sanctions-list-framework": {
+        title: "制裁名单与法律框架检索",
+        results: [
+          {
+            source: "商务部",
+            title: "中国出口管制信息网：出口管制政策法规与合规资讯",
+            summary: "用于核对中国出口管制、两用物项管理和企业合规要求，作为本地法律框架的首要检索入口。",
+            url: "https://exportcontrol.mofcom.gov.cn/"
+          },
+          {
+            source: "中国政府网",
+            title: "政策法规检索：出口管制法、反外国制裁法及相关行政法规",
+            summary: "补充中国法律法规原文与政策发布口径，用于判断交易暂停、材料补充和合规升级的本地依据。",
+            url: "https://www.gov.cn/zhengce/"
+          },
+          {
+            source: "OFAC",
+            title: "Sanctions List Search",
+            summary: "用于核对 SDN 等美国制裁名单，辅助识别名称相似、主体命中和需升级复核的情况。",
+            url: "https://sanctionssearch.ofac.treas.gov/"
+          },
+          {
+            source: "UN Security Council",
+            title: "United Nations Security Council Consolidated List",
+            summary: "联合国安理会综合制裁名单，可作为跨境交易主体筛查的基础名单之一。",
+            url: "https://main.un.org/securitycouncil/en/content/un-sc-consolidated-list"
+          }
+        ]
+      },
+      "ubo-red-flags-screening": {
+        title: "UBO 穿透红旗与名称相似检索",
+        results: [
+          {
+            source: "中国人民银行",
+            title: "受益所有人信息管理办法（2024）及反洗钱监管信息",
+            summary: "用于确认受益所有人识别、备案和客户身份资料要求，支撑 UBO 穿透和材料阈值判断。",
+            url: "https://www.pbc.gov.cn/"
+          },
+          {
+            source: "市场监管总局",
+            title: "经营主体登记与受益所有人信息备案相关规则",
+            summary: "用于补充境内主体登记、控制关系和受益所有人信息备案口径，辅助识别股权链异常。",
+            url: "https://www.samr.gov.cn/"
+          },
+          {
+            source: "FATF",
+            title: "Guidance on Beneficial Ownership of Legal Persons",
+            summary: "受益所有人透明度指引，可用于定义 UBO 识别、控制关系和主体穿透要求。",
+            url: "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Guidance-Beneficial-Ownership-Legal-Persons.html"
+          },
+          {
+            source: "Wolfsberg Group",
+            title: "Financial Crime Compliance Questionnaire",
+            summary: "金融犯罪合规问卷框架，适合参考客户尽调、制裁筛查和控制措施问题设计。",
+            url: "https://www.wolfsberg-principles.com/"
+          }
+        ]
+      },
+      "kyc-edd-evidence-standard": {
+        title: "KYC/EDD 材料阈值检索",
+        results: [
+          {
+            source: "中国人民银行",
+            title: "反洗钱法规与客户身份识别监管资料",
+            summary: "用于确定客户身份识别、资料留存、可疑交易识别和增强尽调触发条件。",
+            url: "https://www.pbc.gov.cn/"
+          },
+          {
+            source: "香港金管局",
+            title: "打击洗钱及恐怖分子资金筹集监管指引",
+            summary: "用于参考跨境贸易融资和金融机构客户尽调中的风险分层、持续监控与补件要求。",
+            url: "https://www.hkma.gov.hk/"
+          },
+          {
+            source: "FATF",
+            title: "Recommendations 10 and 12 Customer Due Diligence",
+            summary: "客户尽职调查与增强尽调要求，可用于确定客户识别、受益人识别和高风险情形处理标准。",
+            url: "https://www.fatf-gafi.org/en/topics/fatf-recommendations.html"
+          },
+          {
+            source: "ICC",
+            title: "Trade Finance Principles",
+            summary: "贸易融资合规原则，覆盖贸易交易中的客户、货物、单据和制裁风险控制。",
+            url: "https://iccwbo.org/business-solutions/global-policy/trade-finance/trade-finance-principles/"
+          }
+        ]
+      },
+      "sanctions-communication-recordkeeping": {
+        title: "合规沟通与审批留痕检索",
+        results: [
+          {
+            source: "商务部",
+            title: "企业出口管制内部合规机制建设指引与政策资讯",
+            summary: "用于形成企业内部审批、职责分工、异常升级和合规沟通的本地化操作依据。",
+            url: "https://exportcontrol.mofcom.gov.cn/"
+          },
+          {
+            source: "中国人民银行",
+            title: "客户身份资料、交易记录保存与反洗钱内控要求",
+            summary: "用于补充 KYC 资料保存、审批留痕和可疑线索处理的监管要求。",
+            url: "https://www.pbc.gov.cn/"
+          },
+          {
+            source: "OFAC",
+            title: "Compliance Framework Recordkeeping and Internal Controls",
+            summary: "合规框架强调内部控制、记录留存和问题升级，适合支撑暂停发运和审批留痕要求。",
+            url: "https://ofac.treasury.gov/compliance-and-enforcement/framework-ofac-compliance-commitments"
+          },
+          {
+            source: "BIS Export Enforcement",
+            title: "Know Your Customer Guidance",
+            summary: "了解你的客户相关指引，可用于组织客户补件、异常解释和风险沟通话术。",
+            url: "https://www.bis.gov/index.php/enforcement/know-your-customer-guidance"
+          }
+        ]
+      },
       "soybean-weekly-market-check": {
         title: "大豆周度行情外部佐证",
         results: [
@@ -10626,7 +10730,7 @@
             title: "价格低点与建库窗口判断",
             skillId: "price-window-skill",
             icon: "agent",
-            agentName: "农产品价格研判智能体",
+            agentName: "农产品价格预测智能体",
             text: "判断当前是否适合启动战略建库...",
             summary: "已完成价格走势、低位判断和建库节奏建议",
             chips: [
@@ -10677,7 +10781,7 @@
             title: "供应链中断与履约风险评估",
             skillId: "supply-risk-skill",
             icon: "agent",
-            agentName: "农产品风险预警智能体",
+            agentName: "农产品物流风险预警智能体",
             text: "评估采购到入库过程中的履约风险...",
             summary: "已完成港口、船期、到港和履约风险判断",
             chips: [
@@ -10697,12 +10801,12 @@
         summary: "已形成分散仓储、库存分层和调拨执行规则",
         sections: [
           {
-            title: "仓储、库存与调拨方案设计",
+            title: "仓储、库存与调度方案设计",
             skillId: "logistics-routing-skill",
             icon: "agent",
-            agentName: "仓储调拨智能体",
-            text: "设计战略库存的仓储和调拨方案...",
-            summary: "已形成仓储组合、库存分层和应急调拨方案",
+            agentName: "供应链智能体",
+            text: "基于供应链服务能力，设计战略库存的仓储、库存调度和调拨方案...",
+            summary: "已形成仓储组合、库存分层和库存调度方案",
             chips: [
               { label: "正在规划产区仓、港口仓、中转仓和销区仓组合...", icon: "agent" },
               { label: "正在设计库存分层：战略库存、周转库存、应急库存...", icon: "plan" },
@@ -10741,15 +10845,14 @@
         ]
       },
       {
-        title: "文档输出与预览",
+        title: "生成战略库存研判报告",
         skillId: "report-structuring-skill",
         icon: "doc",
-        text: "方案已生成，正在整理文档、写入资产并准备预览。",
-        summary: "已完成文档输出、报告归档和预览入口",
+        text: "汇总前序研判结果，形成完整的研判报告。",
+        summary: "已生成战略库存研判报告",
         chips: [
-          { label: "正在生成研判报告文档", icon: "doc" },
-          { label: "正在写入资产列表", icon: "plan" },
-          { label: "正在准备文档预览与下载入口", icon: "download" }
+          { label: "正在整理研判结论", icon: "merge" },
+          { label: "正在生成战略库存研判报告", icon: "doc" }
         ]
       }
     ];
@@ -10760,7 +10863,7 @@
       { chip: [660, 660, 660, 660, 1080, 1060, 1200, 1140, 1320, 1000], after: 860, pause: 360 },
       { chip: [1080, 980, 1160, 1300, 1200, 840, 960, 900, 1080], after: 760, pause: 340 },
       { chip: [1040, 1160, 1000, 1280, 1120], after: 900, pause: 340 },
-      { chip: [720, 640, 600], after: 680, pause: 0 }
+      { chip: [720, 760, 680], after: 680, pause: 0 }
     ];
 
     const qaProcessSteps = [
@@ -11423,13 +11526,13 @@
       {
         id: "supply-chain-agent",
         invokeId: "supply-chain-agent",
-        name: "供应链智能客服智能体",
+        name: "供应链智能体",
         category: "service-ops",
         categoryLabel: "供应链服务",
         subCategoryLabels: ["物流咨询", "仓储管理", "库存调度", "订单跟踪", "客服问答"],
         description: "调用供应链智能客服工作流，面向物流运输、仓储管理、库存调度、订单跟踪和供应链咨询提供对话式问答服务。",
         prompt: `### 角色
-你是供应链智能客服智能体，负责通过 HiAgent 工作流回答物流、仓储、库存、订单和供应链相关问题。
+你是供应链智能体，负责通过 HiAgent 工作流回答物流、仓储、库存、订单和供应链相关问题。
 
 ### 目标
 为用户提供稳定、清晰、可追踪的供应链客服问答，并在需要时引导用户补充业务信息。
@@ -12186,6 +12289,181 @@
     ];
     const SEEDED_HISTORY_ITEMS = [
       {
+        key: "ore-sanctions-ubo-shipping-decision",
+        title: "铁矿石制裁风险与 UBO 审查",
+        question: placeholderCase2.question,
+        updatedAt: new Date("2026-06-01T17:20:00+08:00").getTime(),
+        userMessage: placeholderCase2.question,
+        outputReport: {
+          title: "铁矿石跨境贸易制裁风险评估与决策框架报告",
+          meta: "PDF",
+          fileHref: REAL_ORE_PDF,
+          previewHref: REAL_ORE_PDF
+        },
+        processSummary: "已调用铁矿石研究与供应链服务智能体，完成 UBO 穿透、制裁合规和暂停发运决策路径规划",
+        processSteps: [
+          {
+            title: "梳理制裁名单与法律框架",
+            icon: "shield",
+            text: "先明确本单铁矿石跨境贸易可能适用的国际制裁、本地合规要求和公司内部风控边界。",
+            summary: "已明确制裁名单范围、适用法律框架和业务限制边界",
+            sections: [
+              {
+                title: "铁矿石交易链条背景识别",
+                icon: "agent",
+                agentName: "铁矿石通用研究智能体",
+                text: "调用铁矿石通用研究智能体，先把问题落到铁矿石跨境贸易语境中，梳理矿石品类、交易链条、最终买方、合同/付款/发运节点及可能影响放行判断的业务事实。",
+                summary: "铁矿石通用研究智能体已返回交易链条、主体角色和发运节点梳理结果",
+                chips: [
+                  { label: "调用输入：铁矿石跨境贸易、最终买方、相似名称、客户催促发运", icon: "agent" },
+                  { label: "识别结果：卖方、买方、最终买方和中间贸易主体需要分层核验", icon: "merge" },
+                  { label: "节点结果：合同签署、付款、放货、发运是四个独立风控动作", icon: "plan" },
+                  { label: "输出结果：业务事实、待补材料和合规疑点已拆分", icon: "doc" }
+                ]
+              },
+              {
+                title: "制裁名单与法律框架梳理",
+                icon: "search",
+                text: "承接铁矿石通用研究智能体返回的主体和节点清单，核对可能适用的国际制裁名单、本地监管要求和公司内部制裁合规边界。",
+                summary: "已明确制裁名单范围、适用法律框架和业务限制边界",
+                chips: [
+                  { label: "正在检索中国出口管制法规、OFAC 与联合国制裁名单口径", icon: "search", searchKey: "sanctions-list-framework" },
+                  { label: "正在识别最终买方、付款方、收货方和中间贸易商的适用辖区", icon: "shield" },
+                  { label: "正在拆分合同签署、收款、放货和发运四类风险动作", icon: "plan" },
+                  { label: "初步结论：命中或疑似命中名单时，应先暂停高风险动作", icon: "pause" }
+                ]
+              }
+            ]
+          },
+          {
+            title: "识别 UBO 红旗与名称相似标准",
+            icon: "search",
+            text: "对股权穿透链条和名称相似情况做红旗拆解，判断风险是形式相似、主体关联，还是实质控制风险。",
+            summary: "已列出 UBO 穿透红旗和名称相似判定标准",
+            sections: [
+              {
+                title: "UBO 穿透红旗识别",
+                icon: "shield",
+                text: "检查最终受益人、实际控制人、董事高管、关联公司和交易中间层是否存在断点或异常。",
+                summary: "已识别穿透链条断点和控制权异常",
+                chips: [
+                  { label: "股权层级过长或关键层级缺失", icon: "merge" },
+                  { label: "最终买方与付款方、收货方不一致", icon: "shield" },
+                  { label: "临时更换合同主体、提单抬头或收款账户", icon: "pause" },
+                  { label: "受益人声明无法覆盖实际控制关系", icon: "doc" }
+                ]
+              },
+              {
+                title: "名称相似判定标准",
+                icon: "search",
+                text: "对相似名称进行语言、拼写、注册地址、注册号、受益人和历史交易链条交叉核验。",
+                summary: "已形成名称相似的排除与升级标准",
+                chips: [
+                  { label: "检索 UBO 穿透红旗与名称相似判定资料", icon: "search", searchKey: "ubo-red-flags-screening" },
+                  { label: "名称音译、缩写、拼写变体比对", icon: "search", searchKey: "ubo-red-flags-screening" },
+                  { label: "注册地址、注册号、董事和实控人交叉验证", icon: "doc" },
+                  { label: "无法排除同一主体或关联主体时升级复核", icon: "shield" }
+                ]
+              }
+            ]
+          },
+          {
+            title: "确定材料阈值与 KYC/EDD 清单",
+            icon: "doc",
+            text: "把是否可继续推进拆成材料阈值，明确哪些材料必须闭环，哪些材料只能作为辅助佐证。",
+            summary: "已形成 KYC/EDD 材料清单和证据标准",
+            sections: [
+              {
+                title: "KYC 材料与业务资料清单整理",
+                icon: "agent",
+                agentName: "供应链智能体",
+                text: "调用供应链智能体，按业务流程口径整理客户、合同、货权、付款、提单和发运资料，把合规要求转成业务人员可补齐的材料清单。",
+                summary: "供应链智能体已返回 KYC 补件清单、资料归口和业务沟通口径",
+                chips: [
+                  { label: "调用输入：客户主体、合同资料、货权资料、付款账户、发运安排", icon: "agent" },
+                  { label: "资料结果：主体注册文件、董事高管名单和授权文件需补齐", icon: "doc" },
+                  { label: "流程结果：合同、提单、付款账户、收货信息需逐项对齐", icon: "merge" },
+                  { label: "输出结果：形成业务可执行的补材料清单和对客口径", icon: "plan" }
+                ]
+              },
+              {
+                title: "EDD 证据标准与材料阈值",
+                icon: "shield",
+                text: "承接供应链智能体整理出的补件清单，对高风险相似名称和 UBO 断点设置增强尽调标准，明确哪些证据必须闭环后才能恢复推进。",
+                summary: "已形成 EDD 证据标准和恢复推进阈值",
+                chips: [
+                  { label: "UBO 股权穿透图和最终受益人声明", icon: "doc" },
+                  { label: "检索 KYC/EDD 材料阈值和贸易合规证据标准", icon: "search", searchKey: "kyc-edd-evidence-standard" },
+                  { label: "制裁名单筛查记录和相似名称解释说明", icon: "search", searchKey: "kyc-edd-evidence-standard" },
+                  { label: "货权流、资金流、票据流一致性证明", icon: "merge" },
+                  { label: "增强尽调 EDD：必要时补充第三方数据库或律师意见", icon: "shield" }
+                ]
+              }
+            ]
+          },
+          {
+            title: "制定审批升级与暂停发运决策树",
+            icon: "plan",
+            text: "将红旗信号、材料完整度和业务时效放入同一套决策树，避免只凭客户催促推进发运。",
+            summary: "已完成暂停发运、升级审批和有条件推进流程",
+            chips: [
+              { label: "承接铁矿石通用研究智能体输出的交易节点清单", icon: "agent" },
+              { label: "承接供应链智能体输出的 KYC 补件清单", icon: "agent" },
+              { label: "高风险：无法排除制裁关联时暂停签约、放货和发运", icon: "pause" },
+              { label: "中风险：材料未闭环但可解释时进入合规升级审批", icon: "shield" },
+              { label: "低风险：材料闭环且相似名称可排除后有条件推进", icon: "merge" },
+              { label: "审批节点：业务负责人、法务、合规负责人分层确认", icon: "plan" },
+              { label: "留痕要求：筛查记录、审批意见和客户回复完整归档", icon: "doc" }
+            ]
+          },
+          {
+            title: "汇总操作建议与合规话术",
+            icon: "merge",
+            text: "将决策树转成业务可执行动作，并准备对客户解释暂停、补材料和恢复推进的沟通口径。",
+            summary: "已形成操作建议、客户话术和业务推进边界",
+            chips: [
+              { label: "对内建议：先冻结高风险动作，同步补齐材料", icon: "pause" },
+              { label: "检索制裁合规沟通、审批留痕和记录保存要求", icon: "search", searchKey: "sanctions-communication-recordkeeping" },
+              { label: "对客话术：基于供应链智能体口径说明补件原因", icon: "agent" },
+              { label: "业务推进：允许准备非承诺性材料和替代履约方案", icon: "plan" },
+              { label: "恢复条件：相似名称排除、UBO 闭环、审批留痕完成", icon: "shield" },
+              { label: "最终目标：避免制裁违规，同时降低误伤正常业务", icon: "merge" }
+            ]
+          }
+        ],
+        answer: `### 结论
+该问题应按“UBO 穿透与制裁合规决策”处理，而不是简单判断是否发货。当前已经出现受制裁主体相似名称，且 UBO 材料尚未闭环，因此建议先暂停签约、放货和发运等高风险动作，进入合规升级复核。待名称相似风险可排除、UBO 链条闭环、审批留痕完整后，再判断是否可以有条件推进。
+
+### 1. 梳理制裁名单与法律框架
+第一步需要确认交易链条中最终买方、付款方、收货方、中间贸易商、承运相关主体分别适用哪些制裁规则。至少应覆盖联合国、OFAC、欧盟、英国等常用名单，并结合本地监管要求和公司内部制裁合规政策。
+
+这一步的关键不是只查“合同相对方”，而是把合同签署、付款、放货、发运四类动作拆开看。只要任一关键主体存在无法排除的名单关联，就不应因客户催促而继续推进高风险动作。
+
+### 2. 列出 UBO 红旗与名称相似判定标准
+UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失、最终受益人声明无法覆盖实际控制关系、付款方和收货方不一致、临时更换合同主体或提单抬头、交易链条中出现无明确商业目的的中间公司。
+
+名称相似不能只靠肉眼判断。建议同时比对英文拼写、音译、缩写、注册地址、注册号、董事高管、实控人、历史交易对手和收款账户。若无法证明只是同名或低风险相似，应按疑似命中处理并升级复核。
+
+### 3. 确定材料阈值与 KYC/EDD 清单
+在恢复推进前，至少需要补齐以下材料：最终买方和关键中间主体的注册文件、股权穿透图、UBO 声明、董事高管名单、授权文件、制裁名单筛查记录、相似名称解释说明，以及货权流、资金流、票据流一致性证明。
+
+如果相似名称涉及高风险辖区、复杂中间层或实际控制关系不清，应启动增强尽调 EDD，必要时引入第三方数据库核验或外部律师意见。缺少关键证据时，不应以业务说明替代合规证明。
+
+### 4. 制定审批升级与暂停发运决策树
+建议采用三档决策：
+
+1. 高风险：无法排除制裁关联、UBO 链条断裂、付款或货权路径异常。处理方式是暂停签约、放货和发运，并提交合规负责人复核。
+2. 中风险：主体可解释但材料未闭环，或存在局部红旗。处理方式是允许业务准备非承诺性材料，但不得执行发运和付款指令，待法务与合规审批。
+3. 低风险：名称相似已排除，UBO 与交易链条材料闭环，审批留痕完整。处理方式是有条件推进，并设置后续监控。
+
+### 5. 操作建议与合规话术
+对内建议是先冻结高风险动作，同步要求客户补齐 UBO 和制裁核验材料；业务团队可以准备替代履约方案、船期沟通和内部审批材料，但不能绕过合规结论直接发运。
+
+对客户的话术可以保持克制：由于交易链条涉及最终买方穿透和制裁名单相似名称核验，公司需要完成必要的 UBO 与制裁合规复核后才能进入签约或发运环节。该流程是为了保护双方交易安全，并非否定交易本身。
+
+最终判断是：当前不宜直接放行。只有在相似名称可排除、UBO 链条闭环、KYC/EDD 材料满足阈值、审批升级记录完整后，才可以恢复推进。`
+      },
+      {
         key: "nickel-policy-q3",
         title: "印尼镍矿政策变化影响",
         question: "梳理印尼镍矿出口政策变化对三季度原料采购节奏和库存策略的影响",
@@ -12433,6 +12711,11 @@
 如果用于正式排程，还需要补齐两类信息：未来一周预测出库量、在途批次的预计到仓时间。缺少这两项时，建议把结论作为预警排序，而不是直接作为最终采购单。`
       }
     ];
+    const oreSanctionsSeedHistory = SEEDED_HISTORY_ITEMS.find((item) => item.key === "ore-sanctions-ubo-shipping-decision");
+    if (oreSanctionsSeedHistory) {
+      placeholderCase2.processSteps = oreSanctionsSeedHistory.processSteps;
+      placeholderCase2.final = oreSanctionsSeedHistory.answer;
+    }
     let conversationHistory = [];
     let scrollHideTimer;
     let autoScrollTimer;
@@ -14578,6 +14861,28 @@
       return `<div class="message-attachments">${files.map((file) => attachmentHtml(file, { message: true })).join("")}</div>`;
     }
 
+    function renderSeedOutputReport(report) {
+      if (!report?.title) return "";
+      const meta = report.meta || "DOCX";
+      const fileHref = report.fileHref || DEFAULT_REPORT_FILE;
+      const previewHref = report.previewHref || DEFAULT_REPORT_PREVIEW;
+      return `
+        <button class="file-card output-file ready" type="button" data-preview-report
+          data-report-title="${escapeHtml(report.title)}"
+          data-report-file-href="${escapeHtml(fileHref)}"
+          data-report-preview-href="${escapeHtml(previewHref)}"
+          title="预览文档">
+          <span class="file-body">
+            <span class="file-icon">${escapeHtml(getReportIcon(meta))}</span>
+            <span class="file-main">
+              <strong>${escapeHtml(report.title)}</strong>
+              <p>${escapeHtml(meta)} · 已生成 · 点击预览</p>
+            </span>
+          </span>
+        </button>
+      `;
+    }
+
     function bindTextareaSubmit(textarea, form) {
       textarea.addEventListener("keydown", (event) => {
         if (event.key !== "Enter" || event.isComposing) return;
@@ -15308,6 +15613,7 @@
     function buildSeedConversationHtml(question, answer, options = {}) {
       const userText = options.userMessage || question;
       const attachmentsHtml = renderMessageAttachments(options.attachments || []);
+      const outputReportHtml = renderSeedOutputReport(options.outputReport);
       return `
         <div class="message user">
           ${attachmentsHtml}
@@ -15319,6 +15625,7 @@
             <div class="bubble result-bubble">
               <div class="result-text">${markdownToHtml(answer)}</div>
             </div>
+            ${outputReportHtml}
           </div>
         </div>
       `;
@@ -16847,14 +17154,14 @@
       return true;
     }
 
-    async function showPlannedNodes(card, runId) {
+    async function showPlannedNodes(card, runId, steps = processSteps) {
       const planning = card.querySelector(".planning-step");
       if (!planning) return false;
-      planning.querySelector(".planning-nodes").innerHTML = processSteps
+      planning.querySelector(".planning-nodes").innerHTML = steps
         .map((step, index) => `<span class="plan-node queued" data-chip><span class="plan-index">${index + 1}</span><span class="plan-title">${escapeHtml(step.title)}</span></span>`)
         .join("");
       card.classList.add("planned");
-      card.querySelector("[data-process-summary]").textContent = `已规划 ${processSteps.length} 个步骤`;
+      card.querySelector("[data-process-summary]").textContent = `已规划 ${steps.length} 个步骤`;
       const keepGoing = await revealProcessStep(planning, runId, {
         chip: [300, 350, 350, 320, 350, 300],
         after: 720
@@ -16974,6 +17281,7 @@
       activeAutoSearchCount = 0;
       const baseData = scenarioData[scenarioKey] || scenarioData.custom;
       const data = { ...baseData, question: customQuestion || baseData.question };
+      const activeProcessSteps = data.processSteps || processSteps;
 
       try {
         activeHistoryQuestion = data.question;
@@ -16991,7 +17299,7 @@
         await sleep(4200);
         if (activeRunId !== runId) return;
         suppressAutoScroll = false;
-        const planned = await showPlannedNodes(processCard, runId);
+        const planned = await showPlannedNodes(processCard, runId, activeProcessSteps);
         if (!planned || activeRunId !== runId) return;
         await sleep(1200);
         if (activeRunId !== runId) return;
@@ -16999,9 +17307,9 @@
         processCard.classList.remove("planning-card");
         processCard.querySelector("[data-process-summary]").textContent = "执行流程";
 
-        for (let i = 0; i < processSteps.length; i += 1) {
+        for (let i = 0; i < activeProcessSteps.length; i += 1) {
           if (activeRunId !== runId) return;
-          const stepEl = appendProcessStep(processCard, processSteps[i], i);
+          const stepEl = appendProcessStep(processCard, activeProcessSteps[i], i);
           setProcessState(processCard, i);
           const keepGoing = await revealProcessStep(stepEl, runId, processTimings[i] || { chip: [760], after: 420, pause: 220 });
           if (!keepGoing) return;
@@ -17010,7 +17318,7 @@
         }
 
         if (activeRunId !== runId) return;
-        setProcessState(processCard, processSteps.length);
+        setProcessState(processCard, activeProcessSteps.length);
         if (!sidePanelDismissed) {
           closePreview(false);
         }
