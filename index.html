@@ -1080,6 +1080,13 @@
       display: none;
     }
 
+    .account-menu-wrap {
+      position: relative;
+      z-index: 12;
+      width: 100%;
+      margin-top: auto;
+    }
+
     .account-card {
       position: relative;
       z-index: 12;
@@ -1090,7 +1097,6 @@
       grid-template-columns: var(--sidebar-control) minmax(0, 1fr);
       align-items: center;
       gap: 0;
-      margin-top: auto;
       padding: 0;
       border: 1px solid transparent;
       border-radius: 10px;
@@ -1100,12 +1106,18 @@
       font-weight: var(--weight-medium);
       line-height: 1;
       text-align: left;
-      cursor: default;
+      cursor: pointer;
       transition: background 180ms ease, color 180ms ease;
     }
 
-    .account-card:hover {
+    .account-card:hover,
+    .account-menu-wrap.is-open .account-card {
       background: var(--surface-hover);
+    }
+
+    .account-card:focus-visible {
+      outline: 2px solid rgba(47, 111, 237, 0.24);
+      outline-offset: 2px;
     }
 
     .account-avatar {
@@ -1145,6 +1157,96 @@
       font-size: var(--font-caption);
       font-weight: var(--weight-semibold);
       line-height: 1.1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .account-menu {
+      position: absolute;
+      left: 0;
+      bottom: calc(100% + 8px);
+      z-index: 40;
+      width: 100%;
+      display: grid;
+      gap: 2px;
+      padding: 6px;
+      border: 1px solid rgba(221, 228, 236, 0.92);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 16px 38px rgba(35, 58, 87, 0.14);
+      transform-origin: left bottom;
+      animation: accountMenuIn 150ms ease both;
+    }
+
+    .account-menu[hidden] {
+      display: none;
+    }
+
+    .account-menu-item {
+      width: 100%;
+      min-height: 36px;
+      display: grid;
+      grid-template-columns: 20px minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+      padding: 7px 8px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      color: var(--text-secondary);
+      background: transparent;
+      text-align: left;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .account-menu-item:hover,
+    .account-menu-item.is-active {
+      color: var(--blue-deep);
+      border-color: rgba(47, 111, 237, 0.16);
+      background: var(--blue-soft);
+    }
+
+    .account-menu-item.is-disabled {
+      cursor: default;
+      opacity: 0.62;
+    }
+
+    .account-menu-item.is-disabled:hover {
+      color: var(--text-secondary);
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .account-menu-item svg {
+      width: 17px;
+      height: 17px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .account-menu-copy {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .account-menu-copy strong {
+      overflow: hidden;
+      color: inherit;
+      font-size: 12.8px;
+      font-weight: var(--weight-heavy);
+      line-height: 1.15;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .account-menu-copy span {
+      overflow: hidden;
+      color: var(--text-tertiary);
+      font-size: 11px;
+      font-weight: var(--weight-semibold);
+      line-height: 1.25;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -1207,8 +1309,12 @@
       display: none;
     }
 
+    .sidebar-collapsed .account-menu-wrap,
     .sidebar-collapsed .account-card {
       width: var(--sidebar-control);
+    }
+
+    .sidebar-collapsed .account-card {
       height: var(--sidebar-control);
       min-height: var(--sidebar-control);
       grid-template-columns: var(--sidebar-control);
@@ -1221,6 +1327,10 @@
       width: 32px;
       height: 32px;
       font-size: 12px;
+    }
+
+    .sidebar-collapsed .account-menu {
+      width: 182px;
     }
 
     .view {
@@ -3723,7 +3833,8 @@
       display: none;
     }
 
-    .agents-view {
+    .agents-view,
+    .api-view {
       position: fixed;
       inset: 0 auto 0 var(--sidebar-width);
       width: calc(100vw - var(--sidebar-width));
@@ -3733,7 +3844,8 @@
       transition: left var(--layout-duration) var(--layout-ease), width var(--layout-duration) var(--layout-ease);
     }
 
-    .agents-view.active {
+    .agents-view.active,
+    .api-view.active {
       display: block;
     }
 
@@ -3757,6 +3869,915 @@
       display: flex;
     }
 
+    .api-dashboard {
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 18px;
+      overflow: hidden;
+    }
+
+    .api-overview,
+    .api-panel {
+      display: grid;
+      overflow: hidden;
+      border: 1px solid rgba(221, 228, 236, 0.86);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 10px 28px rgba(35, 58, 87, 0.05);
+    }
+
+    .api-overview {
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .api-overview-head,
+    .api-panel-head {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .api-overview-title,
+    .api-panel-title {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .api-overview-title strong,
+    .api-panel-title strong {
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: var(--weight-heavy);
+      line-height: 1.2;
+    }
+
+    .api-summary-card span,
+    .api-card-title span,
+    .api-key-meta {
+      color: var(--text-tertiary);
+      font-size: 12.5px;
+      font-weight: var(--weight-medium);
+      line-height: 1.45;
+    }
+
+    .api-window-picker {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .api-window-trigger {
+      min-width: 118px;
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 0 11px 0 12px;
+      border: 1px solid rgba(221, 228, 236, 0.9);
+      border-radius: 11px;
+      color: var(--text-secondary);
+      background: rgba(248, 250, 252, 0.92);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: var(--weight-heavy);
+      cursor: pointer;
+      transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .api-window-trigger:hover,
+    .api-window-picker.is-open .api-window-trigger {
+      color: var(--blue-deep);
+      border-color: rgba(127, 167, 247, 0.78);
+      background: #ffffff;
+      box-shadow: 0 6px 16px rgba(35, 58, 87, 0.08);
+    }
+
+    .api-window-trigger svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: transform 0.16s ease;
+    }
+
+    .api-window-picker.is-open .api-window-trigger svg {
+      transform: rotate(180deg);
+    }
+
+    .api-window-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      z-index: 30;
+      width: 142px;
+      display: grid;
+      gap: 2px;
+      padding: 6px;
+      border: 1px solid rgba(221, 228, 236, 0.92);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 16px 36px rgba(35, 58, 87, 0.14);
+      animation: accountMenuIn 150ms ease both;
+    }
+
+    .api-window-menu[hidden] {
+      display: none;
+    }
+
+    .api-window-menu button {
+      min-height: 32px;
+      padding: 0 9px;
+      border: 0;
+      border-radius: 9px;
+      color: var(--text-secondary);
+      background: transparent;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: var(--weight-heavy);
+      text-align: left;
+      cursor: pointer;
+      transition: color 0.16s ease, background 0.16s ease;
+    }
+
+    .api-window-menu button:hover {
+      color: var(--text-primary);
+      background: #f7f9fc;
+    }
+
+    .api-window-menu button.is-active {
+      color: var(--blue-deep);
+      background: var(--blue-soft);
+    }
+
+    .api-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .api-summary-card {
+      min-height: 82px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      padding: 14px 15px;
+      border: 1px solid #eef2f6;
+      border-radius: 14px;
+      background: #fbfdff;
+    }
+
+    .api-summary-card strong {
+      color: var(--text-primary);
+      font-size: 24px;
+      font-weight: var(--weight-black);
+      line-height: 1;
+    }
+
+    .api-chart-panel {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #eef2f6;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #fbfdff 0%, #ffffff 100%);
+    }
+
+    .api-chart-legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--text-tertiary);
+      font-size: 11.5px;
+      font-weight: var(--weight-heavy);
+      line-height: 1;
+    }
+
+    .api-chart-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .api-chart-legend i {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(65, 116, 241, 0.46);
+    }
+
+    .api-chart-legend i.is-tokens {
+      width: 16px;
+      height: 2px;
+      background: rgba(29, 91, 230, 0.72);
+    }
+
+    .api-chart-wrap {
+      position: relative;
+      min-width: 0;
+    }
+
+    .api-chart {
+      width: 100%;
+      height: 168px;
+      display: block;
+      border-radius: 12px;
+      background: #ffffff;
+      cursor: crosshair;
+    }
+
+    .api-chart-tip {
+      position: absolute;
+      top: 8px;
+      z-index: 2;
+      min-width: 128px;
+      display: grid;
+      gap: 5px;
+      padding: 9px 10px;
+      border: 1px solid rgba(221, 228, 236, 0.92);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 14px 32px rgba(35, 58, 87, 0.14);
+      font-size: 11.5px;
+      font-weight: var(--weight-semibold);
+      line-height: 1.25;
+      pointer-events: none;
+      transform: translateX(-50%);
+    }
+
+    .api-chart-tip[hidden] {
+      display: none;
+    }
+
+    .api-chart-tip strong {
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: var(--weight-heavy);
+    }
+
+    .api-main-grid {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: start;
+      gap: 18px;
+      overflow: visible;
+    }
+
+    .api-panel,
+    .api-side {
+      min-height: 0;
+    }
+
+    .api-panel {
+      align-self: start;
+      grid-template-rows: auto auto auto;
+    }
+
+    .api-panel-head,
+    .api-card {
+      padding: 16px 18px;
+    }
+
+    .api-panel-head {
+      border-bottom: 1px solid #eef2f6;
+    }
+
+    .api-card-title {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .api-card-title strong {
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: var(--weight-heavy);
+      line-height: 1.2;
+    }
+
+    .api-key-header,
+    .api-key-row {
+      display: grid;
+      grid-template-columns: minmax(150px, 1.2fr) minmax(180px, 1.35fr) minmax(120px, 0.72fr) minmax(120px, 0.78fr) 128px;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .api-key-header {
+      min-height: 38px;
+      padding: 0 18px;
+      border-bottom: 1px solid #eef2f6;
+      color: var(--text-faint);
+      background: #fbfdff;
+      font-size: 11.5px;
+      font-weight: var(--weight-heavy);
+      line-height: 1;
+    }
+
+    .api-key-list {
+      display: grid;
+      align-content: start;
+      gap: 0;
+      overflow: auto;
+    }
+
+    .api-key-row {
+      min-height: 64px;
+      padding: 12px 18px;
+      border-bottom: 1px solid #eef2f6;
+      background: transparent;
+    }
+
+    .api-key-row:last-child {
+      border-bottom: 0;
+    }
+
+    .api-key-cell {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--text-secondary);
+      font-size: 12.8px;
+      font-weight: var(--weight-semibold);
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .api-key-cell.is-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: visible;
+      color: var(--text-primary);
+      font-size: 13.5px;
+      font-weight: var(--weight-heavy);
+    }
+
+    .api-key-name-display {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      border: 0;
+      color: inherit;
+      background: transparent;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .api-key-name-display span {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .api-key-name-display svg {
+      width: 13px;
+      height: 13px;
+      flex: 0 0 13px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.52;
+      transition: opacity 160ms ease, transform 160ms ease;
+    }
+
+    .api-key-name-display:hover svg {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .api-key-name-input {
+      min-height: 32px;
+      font-size: 13px;
+    }
+
+    .api-key-cell.is-key {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--text-tertiary);
+      font-size: 12px;
+    }
+
+    .api-badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      min-height: 20px;
+      padding: 0 7px;
+      border-radius: 999px;
+      color: var(--blue-deep);
+      background: var(--blue-soft);
+      font-size: 11px;
+      font-weight: var(--weight-heavy);
+      line-height: 1;
+    }
+
+    .api-key-actions,
+    .api-card-actions {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      flex-wrap: nowrap;
+    }
+
+    .api-icon-btn {
+      width: 32px;
+      height: 32px;
+      flex: 0 0 32px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: var(--text-secondary);
+      background: transparent;
+      cursor: pointer;
+      transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+    }
+
+    .api-icon-btn:hover {
+      color: var(--blue-deep);
+      border-color: rgba(127, 167, 247, 0.78);
+      background: var(--blue-soft);
+      transform: translateY(-1px);
+    }
+
+    .api-icon-btn.is-danger:hover,
+    .api-icon-btn.is-danger.is-confirming {
+      color: #b42318;
+      border-color: rgba(244, 63, 94, 0.28);
+      background: rgba(254, 242, 242, 0.92);
+    }
+
+    .api-delete-confirm {
+      position: fixed;
+      z-index: 170;
+      width: 172px;
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid rgba(221, 228, 236, 0.94);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 16px 36px rgba(35, 58, 87, 0.16);
+    }
+
+    .api-delete-confirm[hidden] {
+      display: none;
+    }
+
+    .api-delete-confirm p {
+      margin: 0;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: var(--weight-heavy);
+      line-height: 1.35;
+    }
+
+    .api-delete-confirm-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .api-delete-confirm button {
+      min-height: 30px;
+      padding: 0 8px;
+      border: 1px solid transparent;
+      border-radius: 9px;
+      background: transparent;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: var(--weight-heavy);
+      line-height: 1;
+      cursor: pointer;
+      transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .api-delete-confirm button:first-child {
+      color: var(--text-tertiary);
+    }
+
+    .api-delete-confirm button:last-child {
+      color: #b42318;
+    }
+
+    .api-delete-confirm button:hover {
+      border-color: rgba(221, 228, 236, 0.9);
+      background: #f8fafc;
+    }
+
+    .api-delete-confirm button:last-child:hover {
+      border-color: rgba(244, 63, 94, 0.28);
+      background: rgba(254, 242, 242, 0.92);
+    }
+
+    .api-icon-btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .api-key-actions .ghost-btn,
+    .api-card-actions .ghost-btn {
+      min-height: 32px;
+      padding: 7px 10px;
+      font-size: 12px;
+    }
+
+    .api-side {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 18px;
+      overflow: hidden;
+    }
+
+    .api-status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .api-status-card {
+      min-height: 78px;
+      display: grid;
+      align-content: center;
+      gap: 7px;
+      padding: 13px;
+      border: 1px solid #eef2f6;
+      border-radius: 14px;
+      background: #fbfdff;
+    }
+
+    .api-status-card strong {
+      color: var(--text-primary);
+      font-size: 18px;
+      font-weight: var(--weight-black);
+      line-height: 1;
+    }
+
+    .api-status-card span {
+      color: var(--text-tertiary);
+      font-size: 11.5px;
+      font-weight: var(--weight-semibold);
+      line-height: 1.25;
+    }
+    .api-status-dot.is-warning {
+      background: var(--amber);
+      box-shadow: 0 0 0 4px rgba(216, 137, 19, 0.12);
+    }
+
+    .api-modal-form {
+      min-height: auto;
+      display: grid;
+      gap: 16px;
+      overflow: auto;
+      padding: 18px 22px 20px;
+    }
+
+    .api-form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.58fr);
+      gap: 14px;
+    }
+
+    .api-form-field {
+      display: grid;
+      gap: 7px;
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      font-weight: var(--weight-heavy);
+      line-height: 1.2;
+    }
+
+    .api-form-field input,
+    .api-form-field select {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--text-primary);
+      background: #ffffff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: var(--weight-regular);
+      outline: 0;
+      padding: 0 12px;
+    }
+
+    [data-api-create-inputs],
+    .api-create-result,
+    .api-create-preview {
+      display: grid;
+      gap: 14px;
+    }
+
+    .api-create-result[hidden] {
+      display: none;
+    }
+
+    .api-create-key-box {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 30px;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 5px 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #f8fafc;
+    }
+
+    .api-create-key-box code {
+      overflow: hidden;
+      color: var(--text-secondary);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      font-weight: var(--weight-regular);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      user-select: text;
+    }
+
+    .api-create-desc,
+    .api-create-status {
+      margin: 0;
+      color: var(--text-tertiary);
+      font-size: 12px;
+      font-weight: var(--weight-semibold);
+      line-height: 1.35;
+    }
+
+    .api-create-status.is-required {
+      color: #b45309;
+    }
+
+    .api-create-status.is-done {
+      color: var(--blue-deep);
+    }
+
+    .api-create-copy-btn {
+      width: 28px;
+      height: 28px;
+      flex-basis: 28px;
+      border-radius: 8px;
+      color: var(--text-tertiary);
+    }
+
+    .api-create-copy-btn:hover {
+      color: var(--blue-deep);
+      border-color: transparent;
+      background: rgba(47, 111, 237, 0.08);
+      transform: none;
+    }
+
+    .api-create-copy-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .api-scope-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .api-scope-option {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 11px;
+      border: 1px solid #eef2f6;
+      border-radius: 12px;
+      color: var(--text-secondary);
+      background: #fbfdff;
+      font-size: 12px;
+      font-weight: var(--weight-heavy);
+    }
+
+    .api-scope-option input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--blue);
+    }
+
+    .api-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .api-delete-btn {
+      border-color: transparent;
+      color: #b42318;
+      background: transparent;
+    }
+
+    .api-delete-btn:hover {
+      border-color: rgba(180, 35, 24, 0.16);
+      background: rgba(180, 35, 24, 0.06);
+    }
+
+    .api-delete-btn.is-confirming {
+      border-color: rgba(180, 35, 24, 0.28);
+      color: #ffffff;
+      background: #b42318;
+    }
+
+    .api-delete-btn.is-confirming:hover {
+      background: #9f1f16;
+    }
+
+    .api-delete-hint {
+      color: #b42318;
+      font-size: 11.5px;
+      font-weight: var(--weight-semibold);
+      line-height: 1.4;
+    }
+
+    .api-drawer-body {
+      display: grid;
+      gap: 16px;
+      padding: 20px 22px 22px;
+      background: #ffffff;
+    }
+
+    .api-drawer-section {
+      display: grid;
+      gap: 10px;
+    }
+
+    .api-drawer-section strong {
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: var(--weight-heavy);
+      line-height: 1.2;
+    }
+
+    .api-detail-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .api-detail-row {
+      min-height: 44px;
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid #eef2f6;
+    }
+
+    .api-detail-row:first-child {
+      border-top: 1px solid #eef2f6;
+    }
+
+    .api-detail-row:last-child {
+      border-bottom: 1px solid #eef2f6;
+    }
+
+    .api-detail-row span {
+      color: var(--text-tertiary);
+      font-size: 12px;
+      font-weight: var(--weight-heavy);
+      line-height: 1.2;
+    }
+
+    .api-detail-row strong {
+      overflow: hidden;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: var(--weight-semibold);
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .api-detail-name {
+      min-width: 0;
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 10px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: var(--text-secondary);
+      background: transparent;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+    }
+
+    .api-detail-name:hover {
+      color: var(--blue-deep);
+      border-color: rgba(221, 228, 236, 0.86);
+      background: #f8fafc;
+    }
+
+    .api-detail-name strong {
+      min-width: 0;
+    }
+
+    .api-detail-name svg {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 14px;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.72;
+    }
+
+    .api-detail-input {
+      width: 100%;
+      min-height: 36px;
+      padding: 0 10px;
+      border: 1px solid rgba(221, 228, 236, 0.92);
+      border-radius: 10px;
+      color: var(--text-primary);
+      background: #ffffff;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: var(--weight-semibold);
+      line-height: 1.2;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .api-detail-input[hidden] {
+      display: none;
+    }
+
+    .api-detail-input:focus {
+      border-color: rgba(47, 111, 237, 0.46);
+      box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.1);
+    }
+
+    .api-detail-row code {
+      overflow: hidden;
+      color: #243043;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .api-detail-key {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 32px;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .api-toast {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 160;
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 14px;
+      border: 1px solid rgba(221, 228, 236, 0.92);
+      border-radius: 12px;
+      color: var(--text-secondary);
+      background: #ffffff;
+      box-shadow: 0 16px 38px rgba(35, 58, 87, 0.16);
+      font-size: 12.5px;
+      font-weight: var(--weight-heavy);
+      animation: chipIn 180ms ease both;
+    }
+
+    .api-toast[hidden] {
+      display: none;
+    }
+
+    .plugin-panel[hidden] {
+      display: none !important;
+    }
     .plugin-panel[hidden] {
       display: none !important;
     }
@@ -6925,6 +7946,15 @@
       background: var(--blue-soft);
     }
 
+    .subscription-cancel-btn:disabled,
+    .subscription-cancel-btn:disabled:hover {
+      color: var(--text-faint);
+      border-color: rgba(221, 228, 236, 0.7);
+      background: #f8fafc;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
     .subscription-save-btn {
       min-width: 96px;
     }
@@ -8226,6 +9256,18 @@
       }
     }
 
+    @keyframes accountMenuIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px) scale(0.98);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
     @keyframes rise {
       from {
         opacity: 0;
@@ -8468,6 +9510,10 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .api-dashboard {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
       .skills-shell .matrix-grid:not(.is-list-view) {
         grid-template-columns: minmax(0, 1fr);
       }
@@ -8647,6 +9693,67 @@
       .chat-composer .capability-submenu {
         top: auto;
         bottom: calc(100% + 4px);
+      }
+
+      .api-overview,
+      .api-summary-grid,
+      .api-main-grid,
+      .api-status-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .api-overview-head {
+        flex-direction: column;
+      }
+
+      .api-window-picker,
+      .api-window-trigger {
+        width: 100%;
+      }
+
+      .api-window-menu {
+        left: 0;
+        right: auto;
+        width: 100%;
+      }
+
+      .api-key-header {
+        display: none;
+      }
+
+      .api-key-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      .api-key-cell::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 3px;
+        color: var(--text-faint);
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: var(--weight-heavy);
+      }
+
+      .api-key-actions {
+        justify-content: flex-start;
+      }
+
+      .api-form-grid,
+      .api-scope-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .api-key-actions {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .api-key-actions .ghost-btn,
+      .api-card-actions .ghost-btn {
+        min-height: 32px;
+        padding: 7px 10px;
       }
 
       .agent-detail-top {
@@ -9068,11 +10175,30 @@
       <div class="history-empty" id="history-empty">暂无最近对话</div>
     </div>
 
-    <div class="account-card" role="group" aria-label="当前用户">
-      <span class="account-avatar" aria-hidden="true">U</span>
-      <span class="account-copy">
-        <span class="account-name">User</span>
-      </span>
+    <div class="account-menu-wrap" id="account-menu-wrap">
+      <button class="account-card" id="account-menu-toggle" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="账户菜单">
+        <span class="account-avatar" aria-hidden="true">U</span>
+        <span class="account-copy">
+          <span class="account-name">User</span>
+        </span>
+      </button>
+      <div class="account-menu" id="account-menu" role="menu" hidden>
+        <button class="account-menu-item is-disabled" type="button" role="menuitem" aria-disabled="true" tabindex="-1">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M5 20a7 7 0 0 1 14 0"></path>
+          </svg>
+          <span class="account-menu-copy"><strong>账户</strong><span>暂未开放</span></span>
+        </button>
+        <button class="account-menu-item" id="api-menu-btn" type="button" role="menuitem" data-account-nav="api">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M8 9 5 12l3 3"></path>
+            <path d="m16 9 3 3-3 3"></path>
+            <path d="m13 6-2 12"></path>
+          </svg>
+          <span class="account-menu-copy"><strong>API</strong><span>密钥、调用与接入</span></span>
+        </button>
+      </div>
     </div>
   </aside>
 
@@ -9746,6 +10872,132 @@
     <aside class="agent-detail detail-drawer" id="detail-drawer" role="dialog" aria-modal="true"
       aria-labelledby="detail-drawer-title"></aside>
   </div>
+
+  <main class="view api-view" id="api-view">
+    <section class="agents-shell" aria-label="API">
+      <header class="agents-head page-head">
+        <div class="agents-title page-title">
+          <div>
+            <h2>API</h2>
+            <p>管理外部系统接入所需的密钥和调用状态。</p>
+          </div>
+        </div>
+        <div class="agents-head-tools page-head-tools">
+          <button class="subscription-create-btn" id="api-create-key-btn" type="button" title="创建密钥">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14"></path>
+              <path d="M5 12h14"></path>
+            </svg>
+            <span>创建密钥</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="api-dashboard">
+        <section class="api-overview" aria-label="总览信息">
+          <div class="api-overview-head">
+            <div class="api-overview-title">
+              <strong>总览</strong>
+            </div>
+            <div class="api-window-picker" id="api-window-picker">
+              <button class="api-window-trigger" id="api-window-trigger" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="api-window-menu">
+                <span id="api-window-label">近 7 日</span>
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="m6 9 6 6 6-6"></path>
+                </svg>
+              </button>
+              <div class="api-window-menu" id="api-window-menu" role="menu" hidden>
+                <button type="button" role="menuitem" class="is-active" data-api-chart-window="7d">近 7 日</button>
+                <button type="button" role="menuitem" data-api-chart-window="30d">近 30 日</button>
+                <button type="button" role="menuitem" data-api-chart-window="90d">近 90 日</button>
+                <button type="button" role="menuitem" data-api-chart-window="all">全部</button>
+              </div>
+            </div>
+          </div>
+          <div class="api-summary-grid" aria-label="API 数据概览">
+            <div class="api-summary-card"><span>调用次数</span><strong id="api-summary-calls">0</strong></div>
+            <div class="api-summary-card"><span>Token 消耗</span><strong id="api-summary-tokens">0</strong></div>
+            <div class="api-summary-card"><span>平均 Token/次</span><strong id="api-summary-avg-tokens">0</strong></div>
+          </div>
+          <div class="api-chart-panel">
+            <div class="api-chart-legend" aria-hidden="true">
+              <span><i class="is-calls"></i>调用次数</span>
+              <span><i class="is-tokens"></i>Token 消耗</span>
+            </div>
+            <div class="api-chart-wrap">
+              <canvas class="api-chart" id="api-chart" aria-label="调用次数与 Token 消耗趋势" role="img"></canvas>
+              <div class="api-chart-tip" id="api-chart-tip" hidden></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="api-main-grid">
+          <section class="api-panel" aria-label="API 密钥">
+            <div class="api-panel-head">
+              <div class="api-panel-title">
+                <strong>API 密钥</strong>
+              </div>
+            </div>
+            <div class="api-key-header" aria-hidden="true">
+              <span>名称</span>
+              <span>Key</span>
+              <span>创建日期</span>
+              <span>最近使用</span>
+              <span aria-hidden="true"></span>
+            </div>
+            <div class="api-key-list" id="api-key-list"></div>
+          </section>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div class="subscription-modal-overlay" id="api-key-modal" hidden>
+    <section class="subscription-task-modal" role="dialog" aria-modal="true" aria-labelledby="api-modal-title">
+      <header class="subscription-modal-head">
+        <strong id="api-modal-title">新建 API 密钥</strong>
+        <button class="subscription-modal-close" id="api-modal-close" type="button" aria-label="关闭 API 密钥弹窗">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12"></path>
+            <path d="M18 6 6 18"></path>
+          </svg>
+        </button>
+      </header>
+      <form class="api-modal-form" id="api-key-form">
+        <div data-api-create-inputs>
+          <label class="api-form-field">
+            <span>密钥名称</span>
+            <input id="api-key-name-input" type="text" placeholder="例如：报价系统生产环境" required>
+          </label>
+          <p class="api-create-desc">名称用于区分不同业务或环境，后续可随时修改。</p>
+        </div>
+        <div class="api-create-result" data-api-create-result hidden>
+          <div class="api-form-field api-create-preview" aria-label="自动生成的 API Key">
+            <span>Key</span>
+            <div class="api-create-key-box" aria-readonly="true">
+              <code data-api-create-preview-key></code>
+              <button class="api-icon-btn api-create-copy-btn" type="button" data-api-create-preview-copy aria-label="复制密钥">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+                  <path d="M5 15V7a2 2 0 0 1 2-2h8"></path>
+                </svg>
+              </button>
+            </div>
+            <p class="api-create-status" data-api-create-status>请立即复制并妥善保管。</p>
+          </div>
+        </div>
+        <div class="subscription-form-actions">
+          <button class="subscription-cancel-btn" id="api-modal-cancel" type="button">取消</button>
+          <button class="subscription-save-btn" type="submit" data-api-create-submit>创建</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="subscription-modal-overlay" id="api-drawer-overlay" hidden>
+    <section class="subscription-task-modal" id="api-drawer" role="dialog" aria-modal="true" aria-labelledby="api-drawer-title"></section>
+  </div>
+  <div class="api-toast" id="api-toast" hidden></div>
 
   <main class="view chat-view" id="chat-view">
     <div class="chat-shell">
@@ -11245,6 +12497,7 @@
 
     const homeView = document.getElementById("home-view");
     const reportsView = document.getElementById("reports-view");
+    const apiView = document.getElementById("api-view");
     const chatView = document.getElementById("chat-view");
     const questionForm = document.getElementById("question-form");
     const questionInput = document.getElementById("question-input");
@@ -11264,6 +12517,35 @@
     const agentsBtn = document.getElementById("agents-btn");
     const skillsBtn = document.getElementById("skills-btn");
     const subscriptionsBtn = document.getElementById("subscriptions-btn");
+    const accountMenuWrap = document.getElementById("account-menu-wrap");
+    const accountMenuToggle = document.getElementById("account-menu-toggle");
+    const accountMenu = document.getElementById("account-menu");
+    const apiMenuBtn = document.getElementById("api-menu-btn");
+    const apiCreateKeyBtn = document.getElementById("api-create-key-btn");
+    const apiKeyList = document.getElementById("api-key-list");
+    const apiWindowPicker = document.getElementById("api-window-picker");
+    const apiWindowTrigger = document.getElementById("api-window-trigger");
+    const apiWindowMenu = document.getElementById("api-window-menu");
+    const apiWindowLabel = document.getElementById("api-window-label");
+    const apiSummaryCalls = document.getElementById("api-summary-calls");
+    const apiSummaryTokens = document.getElementById("api-summary-tokens");
+    const apiSummaryAvgTokens = document.getElementById("api-summary-avg-tokens");
+    const apiChart = document.getElementById("api-chart");
+    const apiChartTip = document.getElementById("api-chart-tip");
+    const apiKeyModal = document.getElementById("api-key-modal");
+    const apiKeyForm = document.getElementById("api-key-form");
+    const apiKeyNameInput = document.getElementById("api-key-name-input");
+    const apiCreateInputs = document.querySelector("[data-api-create-inputs]");
+    const apiCreateResult = document.querySelector("[data-api-create-result]");
+    const apiCreatePreviewKeyText = document.querySelector("[data-api-create-preview-key]");
+    const apiCreateStatus = document.querySelector("[data-api-create-status]");
+    const apiCreatePreviewCopyBtn = document.querySelector("[data-api-create-preview-copy]");
+    const apiCreateSubmitBtn = document.querySelector("[data-api-create-submit]");
+    const apiModalClose = document.getElementById("api-modal-close");
+    const apiModalCancel = document.getElementById("api-modal-cancel");
+    const apiDrawerOverlay = document.getElementById("api-drawer-overlay");
+    const apiDrawer = document.getElementById("api-drawer");
+    const apiToast = document.getElementById("api-toast");
     const subscriptionsUnreadCount = document.getElementById("subscriptions-unread-count");
     const historySearchTrigger = document.getElementById("history-search-trigger");
     const historySearchOverlay = document.getElementById("history-search-overlay");
@@ -12806,6 +14088,10 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       const div = document.createElement("div");
       div.textContent = value;
       return div.innerHTML;
+    }
+
+    function escapeAttribute(value) {
+      return escapeHtml(value).replace(/"/g, "&quot;");
     }
 
     function normalizeToolState(state = {}) {
@@ -16580,6 +17866,558 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       agentsBtn.classList.toggle("is-active", view === "agents" || view === "skills");
       skillsBtn.classList.toggle("is-active", false);
       subscriptionsBtn.classList.toggle("is-active", view === "subscriptions");
+      apiMenuBtn?.classList.toggle("is-active", view === "api");
+    }
+
+    function closeAccountMenu() {
+      accountMenuWrap?.classList.remove("is-open");
+      if (accountMenu) accountMenu.hidden = true;
+      accountMenuToggle?.setAttribute("aria-expanded", "false");
+    }
+
+    function toggleAccountMenu() {
+      const willOpen = accountMenu?.hidden;
+      if (willOpen) {
+        accountMenuWrap?.classList.add("is-open");
+        accountMenu.hidden = false;
+        accountMenuToggle?.setAttribute("aria-expanded", "true");
+      } else {
+        closeAccountMenu();
+      }
+    }
+
+    const apiKeys = [
+      { id: "live", name: "生产环境密钥", suffix: "9F2A", calls: 1284, createdAt: "2026-05-28", lastUsed: "2026-06-22 10:18" },
+      { id: "test", name: "沙箱测试密钥", suffix: "31C8", calls: 326, createdAt: "2026-06-03", lastUsed: "2026-06-22 09:42" },
+      { id: "sync", name: "供应链看板同步", suffix: "77B0", calls: 96, createdAt: "2026-06-12", lastUsed: "2026-06-21 18:40" }
+    ];
+    let apiToastTimer;
+    const apiChartWindows = {
+      "7d": {
+        label: "近 7 日",
+        caption: "近 7 日调用量",
+        points: [
+          { label: "6/16", calls: 168 },
+          { label: "6/17", calls: 214 },
+          { label: "6/18", calls: 188 },
+          { label: "6/19", calls: 256 },
+          { label: "6/20", calls: 231 },
+          { label: "6/21", calls: 294 },
+          { label: "6/22", calls: 355 }
+        ]
+      },
+      "30d": {
+        label: "近 30 日",
+        caption: "近 30 日调用量",
+        points: [
+          { label: "5/24", calls: 420 },
+          { label: "5/27", calls: 508 },
+          { label: "5/30", calls: 466 },
+          { label: "6/02", calls: 612 },
+          { label: "6/05", calls: 548 },
+          { label: "6/08", calls: 691 },
+          { label: "6/11", calls: 734 },
+          { label: "6/14", calls: 706 },
+          { label: "6/18", calls: 812 },
+          { label: "6/22", calls: 904 }
+        ]
+      },
+      "90d": {
+        label: "近 90 日",
+        caption: "近 90 日调用量",
+        points: [
+          { label: "3/30", calls: 890 },
+          { label: "4/06", calls: 960 },
+          { label: "4/13", calls: 1088 },
+          { label: "4/20", calls: 1016 },
+          { label: "4/27", calls: 1198 },
+          { label: "5/04", calls: 1320 },
+          { label: "5/11", calls: 1266 },
+          { label: "5/18", calls: 1438 },
+          { label: "5/25", calls: 1512 },
+          { label: "6/01", calls: 1644 },
+          { label: "6/08", calls: 1718 },
+          { label: "6/15", calls: 1852 }
+        ]
+      },
+      all: {
+        label: "全部",
+        caption: "全部调用量",
+        points: [
+          { label: "1月", calls: 3120 },
+          { label: "2月", calls: 3860 },
+          { label: "3月", calls: 4688 },
+          { label: "4月", calls: 5236 },
+          { label: "5月", calls: 6420 },
+          { label: "6月", calls: 7268 }
+        ]
+      }
+    };
+    let activeApiChartWindow = "7d";
+    let apiChartGeometry = [];
+    let pendingApiDeleteId = "";
+    let latestCreatedApiKeyId = "";
+    let latestCreatedApiKeyCopied = false;
+    let pendingApiKeyDraft = null;
+
+    function formatApiNumber(value) {
+      return new Intl.NumberFormat("zh-CN").format(value);
+    }
+
+    function apiKeyValue(key) {
+      const safeId = String(key.id).replace(/[^a-zA-Z0-9]/g, "").slice(-8) || "generated";
+      return "sk-live-" + key.suffix + "-" + safeId;
+    }
+
+    function createApiKeyDraft() {
+      return {
+        id: `key-${Date.now()}-${Math.random().toString(16).slice(2, 6)}`,
+        suffix: Math.random().toString(16).slice(2, 6).toUpperCase()
+      };
+    }
+
+    function refreshApiCreatePreview() {
+      pendingApiKeyDraft = createApiKeyDraft();
+      if (apiCreatePreviewKeyText) apiCreatePreviewKeyText.textContent = apiKeyValue(pendingApiKeyDraft);
+    }
+
+    function apiKeyMask(key) {
+      return "sk-live-•••• •••• •••• " + key.suffix;
+    }
+
+    function showApiToast(message) {
+      if (!apiToast) return;
+      apiToast.textContent = message;
+      apiToast.hidden = false;
+      clearTimeout(apiToastTimer);
+      apiToastTimer = setTimeout(() => {
+        apiToast.hidden = true;
+      }, 1800);
+    }
+
+    function closeApiWindowMenu() {
+      apiWindowPicker?.classList.remove("is-open");
+      if (apiWindowMenu) apiWindowMenu.hidden = true;
+      apiWindowTrigger?.setAttribute("aria-expanded", "false");
+    }
+
+    function toggleApiWindowMenu() {
+      const willOpen = Boolean(apiWindowMenu?.hidden);
+      if (!apiWindowMenu) return;
+      apiWindowPicker?.classList.toggle("is-open", willOpen);
+      apiWindowMenu.hidden = !willOpen;
+      apiWindowTrigger?.setAttribute("aria-expanded", String(willOpen));
+    }
+
+    function getActiveApiChartPoints() {
+      return apiChartWindows[activeApiChartWindow]?.points || apiChartWindows["7d"].points;
+    }
+
+    function getApiPointTokens(point, index = 0) {
+      return point.tokens || Math.round(point.calls * (620 + (index % 4) * 48));
+    }
+
+    function formatApiCompactNumber(value) {
+      if (value >= 1000000) return Math.round(value / 100000) / 10 + "M";
+      if (value >= 1000) return Math.round(value / 100) / 10 + "k";
+      return String(Math.round(value));
+    }
+
+    function getNiceApiMax(value) {
+      if (!value) return 1;
+      const exponent = Math.floor(Math.log10(value));
+      const base = Math.pow(10, exponent);
+      const normalized = value / base;
+      const step = normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
+      return step * base;
+    }
+
+    function getApiChartGeometry(points, width, height) {
+      const padding = { top: 14, right: 12, bottom: 28, left: 38 };
+      const plotWidth = Math.max(1, width - padding.left - padding.right);
+      const plotHeight = Math.max(1, height - padding.top - padding.bottom);
+      const maxCalls = getNiceApiMax(Math.max(...points.map((point) => point.calls), 1));
+      const maxTokens = getNiceApiMax(Math.max(...points.map((point, index) => getApiPointTokens(point, index)), 1));
+      const step = plotWidth / points.length;
+      const items = points.map((point, index) => {
+        const centerX = padding.left + step * (index + 0.5);
+        const barHeight = Math.max(6, plotHeight * (point.calls / maxCalls));
+        const tokenY = padding.top + plotHeight - plotHeight * (getApiPointTokens(point, index) / maxTokens);
+        return {
+          point,
+          index,
+          centerX,
+          tokenY,
+          barX: centerX - Math.min(26, step * 0.42) / 2,
+          barY: padding.top + plotHeight - barHeight,
+          barWidth: Math.min(26, step * 0.42),
+          barHeight,
+          labelY: padding.top + plotHeight + 20
+        };
+      });
+      return { padding, plotWidth, plotHeight, maxCalls, maxTokens, items };
+    }
+
+    function drawApiChartAxes(ctx, geometry) {
+      const { padding, plotHeight, plotWidth } = geometry;
+      const bottom = padding.top + plotHeight;
+      const right = padding.left + plotWidth;
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.font = "600 10.5px Arial";
+      ctx.textBaseline = "middle";
+      for (let tick = 0; tick <= 2; tick += 1) {
+        const ratio = 1 - tick / 2;
+        const y = padding.top + plotHeight * (tick / 2);
+        ctx.strokeStyle = tick === 2 ? "rgba(148, 163, 184, 0.38)" : "rgba(221, 228, 236, 0.72)";
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(right, y);
+        ctx.stroke();
+        ctx.fillStyle = "rgba(118, 128, 143, 0.72)";
+        ctx.textAlign = "right";
+        ctx.fillText(formatApiCompactNumber(geometry.maxCalls * ratio), padding.left - 8, y);
+      }
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.42)";
+      ctx.beginPath();
+      ctx.moveTo(padding.left, bottom);
+      ctx.lineTo(right, bottom);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawApiChart() {
+      if (!apiChart?.getContext) return [];
+      const chartWindow = apiChartWindows[activeApiChartWindow] || apiChartWindows["7d"];
+      const points = chartWindow.points;
+      const rect = apiChart.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const width = Math.max(1, Math.round(rect.width));
+      const height = Math.max(1, Math.round(rect.height));
+      if (apiChart.width !== Math.round(width * dpr) || apiChart.height !== Math.round(height * dpr)) {
+        apiChart.width = Math.round(width * dpr);
+        apiChart.height = Math.round(height * dpr);
+      }
+      const ctx = apiChart.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+      const geometry = getApiChartGeometry(points, width, height);
+      drawApiChartAxes(ctx, geometry);
+
+      ctx.fillStyle = "rgba(65, 116, 241, 0.34)";
+      geometry.items.forEach((item) => {
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(item.barX, item.barY, item.barWidth, item.barHeight, [7, 7, 3, 3]);
+        } else {
+          ctx.rect(item.barX, item.barY, item.barWidth, item.barHeight);
+        }
+        ctx.fill();
+      });
+
+      ctx.strokeStyle = "rgba(29, 91, 230, 0.7)";
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      geometry.items.forEach((item, index) => {
+        if (index === 0) ctx.moveTo(item.centerX, item.tokenY);
+        else ctx.lineTo(item.centerX, item.tokenY);
+      });
+      ctx.stroke();
+
+      ctx.fillStyle = "#1d5be6";
+      geometry.items.forEach((item) => {
+        ctx.beginPath();
+        ctx.arc(item.centerX, item.tokenY, 2.6, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.fillStyle = "rgba(118, 128, 143, 0.78)";
+      ctx.font = "600 10.5px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      geometry.items.forEach((item) => {
+        ctx.fillText(item.point.label, item.centerX, item.labelY);
+      });
+
+      return geometry.items;
+    }
+
+    function renderApiChart() {
+      if (!apiChart) return;
+      const chartWindow = apiChartWindows[activeApiChartWindow] || apiChartWindows["7d"];
+      apiChartGeometry = drawApiChart();
+      if (apiWindowLabel) apiWindowLabel.textContent = chartWindow.label;
+      apiChart?.setAttribute("aria-label", "调用次数与 Token 消耗趋势");
+      apiWindowMenu?.querySelectorAll("[data-api-chart-window]").forEach((button) => {
+        const isActive = button.dataset.apiChartWindow === activeApiChartWindow;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+      hideApiChartTip();
+    }
+
+    function showApiChartTip(index, x) {
+      if (!apiChartTip) return;
+      const point = getActiveApiChartPoints()[index];
+      if (!point) return;
+      apiChartTip.innerHTML = '<strong>' + escapeHtml(point.label) + '</strong>' +
+        '<span>调用：' + formatApiNumber(point.calls) + ' 次</span>' +
+        '<span>Token：' + formatApiNumber(getApiPointTokens(point, index)) + '</span>';
+      const wrapWidth = apiChartTip.parentElement?.clientWidth || 0;
+      const tipX = Math.min(Math.max(x, 74), Math.max(74, wrapWidth - 74));
+      apiChartTip.style.left = tipX + "px";
+      apiChartTip.hidden = false;
+    }
+
+    function hideApiChartTip() {
+      if (apiChartTip) apiChartTip.hidden = true;
+    }
+
+    function renderApiDashboard() {
+      if (!apiKeyList) return;
+      const activePoints = getActiveApiChartPoints();
+      const windowCalls = activePoints.reduce((sum, point) => sum + point.calls, 0);
+      const windowTokens = activePoints.reduce((sum, point, index) => sum + getApiPointTokens(point, index), 0);
+      const avgTokens = windowCalls ? Math.round(windowTokens / windowCalls) : 0;
+      apiSummaryCalls.textContent = formatApiNumber(windowCalls);
+      apiSummaryTokens.textContent = formatApiNumber(windowTokens);
+      apiSummaryAvgTokens.textContent = formatApiNumber(avgTokens);
+      renderApiChart();
+      apiKeyList.innerHTML = apiKeys.map((key) => `
+        <article class="api-key-row" data-api-key-id="${escapeHtml(key.id)}">
+          <div class="api-key-cell is-name" data-label="名称" data-api-name-row="${escapeHtml(key.id)}">
+            <button class="api-key-name-display" type="button" data-api-name-edit="${escapeHtml(key.id)}" aria-label="编辑 API 密钥名称">
+              <span data-api-name-label>${escapeHtml(key.name)}</span>
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>
+            </button>
+            <input class="api-detail-input api-key-name-input" type="text" value="${escapeAttribute(key.name)}" data-api-name-input data-original-name="${escapeAttribute(key.name)}" aria-label="API 密钥名称" hidden>
+          </div>
+          <div class="api-key-cell is-key" data-label="Key">${escapeHtml(apiKeyMask(key))}</div>
+          <div class="api-key-cell" data-label="创建日期">${escapeHtml(key.createdAt)}</div>
+          <div class="api-key-cell" data-label="最近使用">${escapeHtml(key.lastUsed)}</div>
+          <div class="api-key-actions">
+            <button class="api-icon-btn" type="button" data-api-copy="${escapeHtml(key.id)}" aria-label="复制 Key">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="9" y="9" width="10" height="10" rx="2"></rect>
+                <path d="M5 15V7a2 2 0 0 1 2-2h8"></path>
+              </svg>
+            </button>
+            <button class="api-icon-btn is-danger" type="button" data-api-delete-row="${escapeHtml(key.id)}" aria-label="删除 Key，需要再次确认">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M3 6h18"></path>
+                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                <path d="M10 11v6"></path>
+                <path d="M14 11v6"></path>
+              </svg>
+            </button>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function resetApiCreateModal() {
+      latestCreatedApiKeyId = "";
+      latestCreatedApiKeyCopied = false;
+      apiKeyForm?.reset();
+      refreshApiCreatePreview();
+      if (apiKeyNameInput) {
+        apiKeyNameInput.value = "";
+        apiKeyNameInput.disabled = false;
+      }
+      if (apiCreateInputs) apiCreateInputs.hidden = false;
+      if (apiCreateResult) apiCreateResult.hidden = true;
+      if (apiCreateStatus) {
+        apiCreateStatus.hidden = false;
+        apiCreateStatus.textContent = "请立即复制并妥善保管。";
+        apiCreateStatus.classList.add("is-required");
+        apiCreateStatus.classList.remove("is-done");
+      }
+      if (apiCreateSubmitBtn) {
+        apiCreateSubmitBtn.hidden = false;
+        apiCreateSubmitBtn.disabled = false;
+        apiCreateSubmitBtn.textContent = "创建";
+      }
+      if (apiModalCancel) {
+        apiModalCancel.disabled = false;
+        apiModalCancel.textContent = "取消";
+      }
+    }
+
+    function openApiCreateModal() {
+      if (!apiKeyModal) return;
+      resetApiCreateModal();
+      apiKeyModal.hidden = false;
+      requestAnimationFrame(() => apiKeyNameInput.focus());
+    }
+
+    function closeApiCreateModal() {
+      if (latestCreatedApiKeyId && !latestCreatedApiKeyCopied) {
+        if (apiCreateStatus) {
+          apiCreateStatus.hidden = false;
+          apiCreateStatus.textContent = "请先复制密钥。";
+          apiCreateStatus.classList.add("is-required");
+          apiCreateStatus.classList.remove("is-done");
+        }
+        showApiToast("请先复制密钥");
+        return;
+      }
+      resetApiCreateModal();
+      if (apiKeyModal) apiKeyModal.hidden = true;
+    }
+
+    function createApiKeyFromForm(event) {
+      event.preventDefault();
+      if (latestCreatedApiKeyId) return;
+      const name = apiKeyNameInput.value.trim();
+      if (!name) {
+        showApiToast("请填写密钥名称");
+        return;
+      }
+      const now = new Date();
+      const draft = pendingApiKeyDraft || createApiKeyDraft();
+      const key = {
+        id: draft.id,
+        name,
+        suffix: draft.suffix,
+        calls: 0,
+        createdAt: now.toISOString().slice(0, 10),
+        lastUsed: "尚未使用"
+      };
+      apiKeys.unshift(key);
+      latestCreatedApiKeyId = key.id;
+      latestCreatedApiKeyCopied = false;
+      if (apiCreateInputs) apiCreateInputs.hidden = true;
+      if (apiCreateResult) apiCreateResult.hidden = false;
+      if (apiCreatePreviewKeyText) apiCreatePreviewKeyText.textContent = apiKeyValue(key);
+      if (apiCreateStatus) {
+        apiCreateStatus.hidden = false;
+        apiCreateStatus.textContent = "请立即复制并妥善保管。";
+        apiCreateStatus.classList.add("is-required");
+        apiCreateStatus.classList.remove("is-done");
+      }
+      if (apiCreateSubmitBtn) {
+        apiCreateSubmitBtn.hidden = true;
+        apiCreateSubmitBtn.disabled = true;
+        apiCreateSubmitBtn.textContent = "创建";
+      }
+      if (apiModalCancel) {
+        apiModalCancel.disabled = true;
+        apiModalCancel.textContent = "关闭";
+      }
+      renderApiDashboard();
+      showApiToast("密钥已创建");
+    }
+
+    function copyApiText(text, message) {
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+      showApiToast(message);
+    }
+
+    function findApiKey(id) {
+      return apiKeys.find((key) => key.id === id) || null;
+    }
+
+    function ensureApiDeleteConfirm() {
+      let popover = document.getElementById("api-delete-confirm");
+      if (popover) return popover;
+      popover = document.createElement("div");
+      popover.id = "api-delete-confirm";
+      popover.className = "api-delete-confirm";
+      popover.hidden = true;
+      popover.innerHTML = '<p>确认删除该密钥？</p><div class="api-delete-confirm-actions"><button type="button" data-api-delete-cancel>取消</button><button type="button" data-api-delete-confirm-action>确认</button></div>';
+      document.body.appendChild(popover);
+      return popover;
+    }
+
+    function closeApiDeleteConfirm() {
+      pendingApiDeleteId = "";
+      const popover = document.getElementById("api-delete-confirm");
+      if (popover) popover.hidden = true;
+      apiKeyList?.querySelectorAll("[data-api-delete-row]").forEach((button) => {
+        button.classList.remove("is-confirming");
+      });
+    }
+
+    function openApiDeleteConfirm(keyId, anchor) {
+      pendingApiDeleteId = keyId;
+      apiKeyList?.querySelectorAll("[data-api-delete-row]").forEach((button) => {
+        button.classList.toggle("is-confirming", button === anchor);
+      });
+      const popover = ensureApiDeleteConfirm();
+      popover.hidden = false;
+      popover.dataset.apiDeleteConfirm = keyId;
+      const rect = anchor.getBoundingClientRect();
+      const width = 172;
+      const left = Math.min(Math.max(rect.right - width, 12), Math.max(12, window.innerWidth - width - 12));
+      const below = rect.bottom + 8;
+      const top = below + 86 > window.innerHeight ? Math.max(12, rect.top - 94) : below;
+      popover.style.left = left + "px";
+      popover.style.top = top + "px";
+    }
+
+    function openApiKeyDrawer(id) {
+      const key = findApiKey(id);
+      if (!key || !apiDrawerOverlay || !apiDrawer) return;
+      apiDrawerOverlay.hidden = false;
+      pendingApiDeleteId = "";
+      apiDrawer.innerHTML = `
+        <header class="subscription-modal-head">
+          <strong id="api-drawer-title">${escapeHtml(key.name)}</strong>
+          <button class="subscription-modal-close" type="button" data-api-drawer-close aria-label="关闭 API 密钥管理弹窗">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6l12 12"></path>
+              <path d="M18 6 6 18"></path>
+            </svg>
+          </button>
+        </header>
+        <div class="api-modal-form">
+          <div class="api-detail-list" aria-label="API 密钥详情">
+            <div class="api-detail-row" data-api-name-row="${escapeHtml(key.id)}"><span>名称</span><button class="api-detail-name" type="button" data-api-name-edit="${escapeHtml(key.id)}" aria-label="编辑 API 密钥名称"><strong data-api-name-label>${escapeHtml(key.name)}</strong><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></button><input class="api-detail-input" type="text" value="${escapeAttribute(key.name)}" data-api-name-input data-original-name="${escapeAttribute(key.name)}" aria-label="API 密钥名称" hidden></div>
+            <div class="api-detail-row"><span>Key</span><div class="api-detail-key"><code>${escapeHtml(apiKeyMask(key))}</code><button class="api-icon-btn" type="button" data-api-copy="${escapeHtml(key.id)}" aria-label="复制 Key"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M5 15V7a2 2 0 0 1 2-2h8"></path></svg></button></div></div>
+            <div class="api-detail-row"><span>创建日期</span><strong>${escapeHtml(key.createdAt)}</strong></div>
+            <div class="api-detail-row"><span>最近使用</span><strong>${escapeHtml(key.lastUsed)}</strong></div>
+          </div>
+          <div class="subscription-form-actions">
+            <span class="api-delete-hint" data-api-delete-hint hidden>删除后无法恢复</span>
+            <button class="subscription-cancel-btn" type="button" data-api-drawer-close>取消</button>
+            <button class="subscription-cancel-btn api-delete-btn" type="button" data-api-delete="${escapeHtml(key.id)}" aria-label="删除密钥，需要再次确认">删除密钥</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function closeApiDrawer() {
+      pendingApiDeleteId = "";
+      if (apiDrawerOverlay) apiDrawerOverlay.hidden = true;
+    }
+
+    function finishApiNameEdit(input, options = {}) {
+      const row = input?.closest("[data-api-name-row]");
+      const key = findApiKey(row?.dataset.apiNameRow || "");
+      const editButton = row?.querySelector("[data-api-name-edit]");
+      const label = row?.querySelector("[data-api-name-label]");
+      const originalName = input?.dataset.originalName || key?.name || "";
+      const nextName = input?.value.trim() || "";
+      if (!input || !row || !key) return;
+      if (options.cancel) input.value = originalName;
+      if (!options.cancel && !nextName) {
+        showApiToast("请填写密钥名称");
+        input.value = originalName;
+      }
+      if (!options.cancel && nextName && nextName !== key.name) {
+        key.name = nextName;
+        input.dataset.originalName = nextName;
+        if (label) label.textContent = nextName;
+        const title = apiDrawer?.querySelector("#api-drawer-title");
+        if (title) title.textContent = nextName;
+        renderApiDashboard();
+        showApiToast("名称已更新");
+      }
+      input.hidden = true;
+      if (editButton) editButton.hidden = false;
     }
 
     function syncPluginTabs(activeTab) {
@@ -16653,6 +18491,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       agentsView.classList.remove("active");
       skillsView?.classList.remove("active");
       subscriptionsView.classList.remove("active");
+      apiView.classList.remove("active");
       chatView.classList.add("active");
       setSidebarActive("");
       if (location.hash !== "#chat") {
@@ -16675,6 +18514,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       agentsView.classList.remove("active");
       skillsView?.classList.remove("active");
       subscriptionsView.classList.remove("active");
+      apiView.classList.remove("active");
       homeView.classList.add("active");
       questionInput.value = "";
       clearAttachments("home");
@@ -16687,7 +18527,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       renderHistory();
       selectedScenarioKey = null;
       setSidebarActive("home");
-      if (location.hash === "#chat" || location.hash === "#reports" || location.hash === "#agents" || location.hash === "#skills" || location.hash === "#subscriptions") {
+      if (location.hash === "#chat" || location.hash === "#reports" || location.hash === "#agents" || location.hash === "#skills" || location.hash === "#subscriptions" || location.hash === "#api") {
         history.pushState({ view: "home" }, "", location.pathname);
       }
       requestAnimationFrame(() => questionInput.focus());
@@ -16704,6 +18544,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       agentsView.classList.remove("active");
       skillsView?.classList.remove("active");
       subscriptionsView.classList.remove("active");
+      apiView.classList.remove("active");
       reportsView.classList.add("active");
       clearChatInput();
       questionInput.value = "";
@@ -16729,6 +18570,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       reportsView.classList.remove("active");
       skillsView?.classList.remove("active");
       subscriptionsView.classList.remove("active");
+      apiView.classList.remove("active");
       agentsView.classList.add("active");
       clearChatInput();
       questionInput.value = "";
@@ -16750,6 +18592,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       reportsView.classList.remove("active");
       agentsView.classList.add("active");
       subscriptionsView.classList.remove("active");
+      apiView.classList.remove("active");
       skillsView?.classList.remove("active");
       clearChatInput();
       questionInput.value = "";
@@ -16772,6 +18615,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       reportsView.classList.remove("active");
       agentsView.classList.remove("active");
       skillsView?.classList.remove("active");
+      apiView.classList.remove("active");
       subscriptionsView.classList.add("active");
       clearChatInput();
       questionInput.value = "";
@@ -16787,6 +18631,35 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       renderSubscriptions();
       if (location.hash !== "#subscriptions") {
         history.pushState({ view: "subscriptions" }, "", "#subscriptions");
+      }
+    }
+
+    function showApi() {
+      resetPluginModuleState();
+      activeRunId += 1;
+      closePreview(true);
+      closeReportsPreview(true);
+      closeDetail();
+      closeAccountMenu();
+      chatView.classList.remove("active");
+      homeView.classList.remove("active");
+      reportsView.classList.remove("active");
+      agentsView.classList.remove("active");
+      skillsView?.classList.remove("active");
+      subscriptionsView.classList.remove("active");
+      apiView.classList.add("active");
+      renderApiDashboard();
+      clearChatInput();
+      questionInput.value = "";
+      clearAttachments("home");
+      setGenerating(false);
+      closeHistoryMenus();
+      closeHistorySearch();
+      clearHistoryHighlight();
+      setSidebarActive("api");
+      renderHistory();
+      if (location.hash !== "#api") {
+        history.pushState({ view: "api" }, "", "#api");
       }
     }
 
@@ -18348,6 +20221,10 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       reportBoardResizeObserver.observe(reportsBoardInner);
     }
     window.addEventListener("resize", () => {
+      if (apiView.classList.contains("active")) {
+        renderApiChart();
+        closeApiDeleteConfirm();
+      }
       if (reportsView.classList.contains("preview-open")) {
         updateReportsPreviewCap();
       }
@@ -18374,13 +20251,225 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
         closeComposerActionMenus();
         closeHistoryMenus();
         closeHistorySearch();
+        closeAccountMenu();
+        closeApiCreateModal();
+        closeApiDrawer();
+        closeApiWindowMenu();
         closeReportsPreview();
         closeDetail();
+      }
+    });
+    accountMenuToggle?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleAccountMenu();
+    });
+    accountMenu?.addEventListener("click", (event) => {
+      const apiButton = event.target.closest("[data-account-nav='api']");
+      if (!apiButton) return;
+      event.stopPropagation();
+      showApi();
+    });
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest("#account-menu-wrap")) {
+        closeAccountMenu();
+      }
+      if (!event.target.closest("#api-window-picker")) {
+        closeApiWindowMenu();
+      }
+      if (!event.target.closest("[data-api-delete-row]") && !event.target.closest("#api-delete-confirm")) {
+        closeApiDeleteConfirm();
+      }
+    });
+    apiCreateKeyBtn?.addEventListener("click", openApiCreateModal);
+    apiModalClose?.addEventListener("click", closeApiCreateModal);
+    apiModalCancel?.addEventListener("click", closeApiCreateModal);
+    apiKeyModal?.addEventListener("click", (event) => {
+      if (event.target === apiKeyModal) closeApiCreateModal();
+    });
+    apiKeyForm?.addEventListener("submit", createApiKeyFromForm);
+    apiCreatePreviewCopyBtn?.addEventListener("click", () => {
+      const key = findApiKey(latestCreatedApiKeyId);
+      if (key) {
+        copyApiText(apiKeyValue(key), "密钥已复制");
+        latestCreatedApiKeyCopied = true;
+        if (apiCreateStatus) {
+          apiCreateStatus.hidden = false;
+          apiCreateStatus.textContent = "已复制，请妥善保存。";
+          apiCreateStatus.classList.remove("is-required");
+          apiCreateStatus.classList.add("is-done");
+        }
+        if (apiModalCancel) {
+          apiModalCancel.disabled = false;
+          apiModalCancel.textContent = "关闭";
+        }
+        return;
+      }
+    });
+    apiWindowTrigger?.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleApiWindowMenu();
+    });
+    apiWindowMenu?.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-api-chart-window]");
+      if (!button) return;
+      event.stopPropagation();
+      activeApiChartWindow = button.dataset.apiChartWindow || "7d";
+      renderApiDashboard();
+      closeApiWindowMenu();
+    });
+    apiChart?.addEventListener("mousemove", (event) => {
+      if (!apiChartGeometry.length) return;
+      const rect = apiChart.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const nearest = apiChartGeometry.reduce((best, item) => {
+        const distance = Math.abs(item.centerX - x);
+        return distance < best.distance ? { index: item.index, x: item.centerX, distance } : best;
+      }, { index: 0, x: 0, distance: Number.POSITIVE_INFINITY });
+      showApiChartTip(nearest.index, nearest.x);
+    });
+    apiChart?.addEventListener("mouseleave", hideApiChartTip);
+    apiKeyList?.addEventListener("focusout", (event) => {
+      const input = event.target.closest?.("[data-api-name-input]");
+      if (input) finishApiNameEdit(input);
+    });
+    apiKeyList?.addEventListener("keydown", (event) => {
+      const input = event.target.closest?.("[data-api-name-input]");
+      if (!input) return;
+      if (event.key === "Enter") {
+        event.preventDefault();
+        finishApiNameEdit(input);
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        finishApiNameEdit(input, { cancel: true });
+      }
+    });
+    apiKeyList?.addEventListener("click", (event) => {
+      const copyButton = event.target.closest("[data-api-copy]");
+      if (copyButton) {
+        const key = findApiKey(copyButton.dataset.apiCopy);
+        if (key) copyApiText(apiKeyMask(key), "密钥已复制");
+        return;
+      }
+      const editNameButton = event.target.closest("[data-api-name-edit]");
+      if (editNameButton) {
+        const row = editNameButton.closest("[data-api-name-row]");
+        const input = row?.querySelector("[data-api-name-input]");
+        if (!input) return;
+        editNameButton.hidden = true;
+        input.hidden = false;
+        input.value = input.dataset.originalName || input.value;
+        requestAnimationFrame(() => {
+          input.focus();
+          input.select();
+        });
+        return;
+      }
+      const deleteButton = event.target.closest("[data-api-delete-row]");
+      if (deleteButton) {
+        openApiDeleteConfirm(deleteButton.dataset.apiDeleteRow, deleteButton);
+      }
+    });
+    document.addEventListener("click", (event) => {
+      const cancelButton = event.target.closest("#api-delete-confirm [data-api-delete-cancel]");
+      if (cancelButton) {
+        closeApiDeleteConfirm();
+        return;
+      }
+      const confirmButton = event.target.closest("#api-delete-confirm [data-api-delete-confirm-action]");
+      if (confirmButton) {
+        const popover = confirmButton.closest("#api-delete-confirm");
+        const keyId = popover?.dataset.apiDeleteConfirm || pendingApiDeleteId;
+        const index = apiKeys.findIndex((key) => key.id === keyId);
+        if (index === -1) return;
+        apiKeys.splice(index, 1);
+        closeApiDeleteConfirm();
+        renderApiDashboard();
+        showApiToast("密钥已删除");
+      }
+    });
+    apiDrawerOverlay?.addEventListener("focusout", (event) => {
+      const input = event.target.closest?.("[data-api-name-input]");
+      if (input) finishApiNameEdit(input);
+    });
+    apiDrawerOverlay?.addEventListener("keydown", (event) => {
+      const input = event.target.closest?.("[data-api-name-input]");
+      if (!input) return;
+      if (event.key === "Enter") {
+        event.preventDefault();
+        finishApiNameEdit(input);
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        finishApiNameEdit(input, { cancel: true });
+      }
+    });
+    apiDrawerOverlay?.addEventListener("click", (event) => {
+      if (event.target.closest("[data-api-drawer-close]")) {
+        closeApiDrawer();
+        return;
+      }
+      const copyButton = event.target.closest("[data-api-copy]");
+      if (copyButton) {
+        const key = findApiKey(copyButton.dataset.apiCopy);
+        if (key) copyApiText(apiKeyMask(key), "密钥已复制");
+        return;
+      }
+      const editNameButton = event.target.closest("[data-api-name-edit]");
+      if (editNameButton) {
+        const row = editNameButton.closest("[data-api-name-row]");
+        const input = row?.querySelector("[data-api-name-input]");
+        if (!input) return;
+        editNameButton.hidden = true;
+        input.hidden = false;
+        input.value = input.dataset.originalName || input.value;
+        requestAnimationFrame(() => {
+          input.focus();
+          input.select();
+        });
+        return;
+      }
+      const deleteButton = event.target.closest("[data-api-delete]");
+      if (deleteButton) {
+        const keyId = deleteButton.dataset.apiDelete;
+        if (pendingApiDeleteId !== keyId) {
+          pendingApiDeleteId = keyId;
+          deleteButton.classList.add("is-confirming");
+          deleteButton.textContent = "确认删除";
+          apiDrawer.querySelector("[data-api-delete-hint]")?.removeAttribute("hidden");
+          return;
+        }
+        const index = apiKeys.findIndex((key) => key.id === keyId);
+        if (index === -1) return;
+        apiKeys.splice(index, 1);
+        closeApiDrawer();
+        renderApiDashboard();
+        showApiToast("密钥已删除");
       }
     });
     previewClose.addEventListener("click", () => closePreview(false, true));
 
     window.addEventListener("popstate", () => {
+      if (location.hash === "#api") {
+        resetPluginModuleState();
+        activeRunId += 1;
+        closePreview(true);
+        closeReportsPreview(true);
+        closeDetail();
+        closeAccountMenu();
+        chatView.classList.remove("active");
+        homeView.classList.remove("active");
+        reportsView.classList.remove("active");
+        agentsView.classList.remove("active");
+        skillsView?.classList.remove("active");
+        subscriptionsView.classList.remove("active");
+        apiView.classList.add("active");
+        renderApiDashboard();
+        clearHistoryHighlight();
+        setSidebarActive("api");
+        renderHistory();
+        return;
+      }
       if (location.hash === "#reports") {
         resetPluginModuleState();
         activeRunId += 1;
@@ -18392,6 +20481,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
         agentsView.classList.remove("active");
         skillsView?.classList.remove("active");
         subscriptionsView.classList.remove("active");
+        apiView.classList.remove("active");
         reportsView.classList.add("active");
         clearHistoryHighlight();
         setSidebarActive("reports");
@@ -18408,6 +20498,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
         reportsView.classList.remove("active");
         skillsView?.classList.remove("active");
         subscriptionsView.classList.remove("active");
+        apiView.classList.remove("active");
         agentsView.classList.add("active");
         clearHistoryHighlight();
         switchPluginContent("agents", { updateHash: false });
@@ -18424,6 +20515,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
         agentsView.classList.add("active");
         subscriptionsView.classList.remove("active");
         skillsView?.classList.remove("active");
+      apiView.classList.remove("active");
         clearHistoryHighlight();
         switchPluginContent("skills", { updateHash: false });
         return;
@@ -18440,6 +20532,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
         agentsView.classList.remove("active");
         skillsView?.classList.remove("active");
         subscriptionsView.classList.add("active");
+        apiView.classList.remove("active");
         clearHistoryHighlight();
         setSidebarActive("subscriptions");
         resetSubscriptionCalendarToToday();
@@ -18457,6 +20550,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
         agentsView.classList.remove("active");
         skillsView?.classList.remove("active");
         subscriptionsView.classList.remove("active");
+        apiView.classList.remove("active");
         chatView.classList.add("active");
         setSidebarActive("");
         applyToolState(questionForm, activeToolState);
@@ -18479,6 +20573,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
         agentsView.classList.remove("active");
         skillsView?.classList.remove("active");
         subscriptionsView.classList.remove("active");
+        apiView.classList.remove("active");
         homeView.classList.add("active");
         setGenerating(false);
         clearHistoryHighlight();
@@ -18507,11 +20602,23 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
     loadHistory();
     renderHistory();
     updateSubscriptionUnreadCount();
-    if (location.hash === "#reports") {
+    renderApiDashboard();
+    if (location.hash === "#api") {
+      homeView.classList.remove("active");
+      reportsView.classList.remove("active");
+      agentsView.classList.remove("active");
+      skillsView?.classList.remove("active");
+      subscriptionsView.classList.remove("active");
+      apiView.classList.add("active");
+      renderApiDashboard();
+      clearHistoryHighlight();
+      setSidebarActive("api");
+    } else if (location.hash === "#reports") {
       homeView.classList.remove("active");
       agentsView.classList.remove("active");
       skillsView?.classList.remove("active");
       subscriptionsView.classList.remove("active");
+      apiView.classList.remove("active");
       reportsView.classList.add("active");
       clearHistoryHighlight();
       setSidebarActive("reports");
@@ -18520,6 +20627,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       reportsView.classList.remove("active");
       skillsView?.classList.remove("active");
       subscriptionsView.classList.remove("active");
+      apiView.classList.remove("active");
       agentsView.classList.add("active");
       clearHistoryHighlight();
       switchPluginContent("agents", { updateHash: false });
@@ -18529,6 +20637,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       agentsView.classList.add("active");
       subscriptionsView.classList.remove("active");
       skillsView?.classList.remove("active");
+      apiView.classList.remove("active");
       clearHistoryHighlight();
       switchPluginContent("skills", { updateHash: false });
     } else if (location.hash === "#subscriptions") {
@@ -18537,6 +20646,7 @@ UBO 穿透的核心红旗包括：股权层级过长、关键层级资料缺失�
       agentsView.classList.remove("active");
       skillsView?.classList.remove("active");
       subscriptionsView.classList.add("active");
+      apiView.classList.remove("active");
       clearHistoryHighlight();
       setSidebarActive("subscriptions");
       resetSubscriptionCalendarToToday();
